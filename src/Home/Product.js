@@ -23,12 +23,12 @@ const Product = () => {
     return (
         <div className="container mt-3 mb-2">
             <div>
-                <img src={product.product_image} className="card-img-top" alt={product.title}/>
                 <div className="card-body">
                     <br/>
                     <h5 className="card-title mb-2"><b>{product.title}</b></h5>
                     {product.category && product.category.map(c => <span style={{background: "coral"}} className="badge badge-pill badge-warning me-3 mb-2">{c}</span>)}
                     <br/>
+                    <img src={product.product_image} style={{ width: "auto", height: "300px" }} className="card-img-top mt-2 mb-1" alt={product.title}/>
                     <p className="card-text">{product.description}</p>
                     <p className="card-text"><small className="text-muted">${product.price}</small>
                     </p>

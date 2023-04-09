@@ -24,15 +24,15 @@ const Home = () => {
                     //Fix images
                     return(
                         <div className="col" >
-                    <div className="card" style={{height: "300px"}}>
-                        <img src={product.product_image} className="card-img-top" alt={product.title}/>
+                    <div className="card" style={{height: "500px"}}>
+                        <img src={product.product_image} className="card-img-top" style={{height: "250px"}} alt={product.title}/>
                         <div className="card-body">
                             <Link
                                 className="wd-user"
                                 to={`/products/${product.product_id}`}
                                 state={{ product: product }}
                                 style={{textDecoration: "none"}}
-                            ><h6 className="card-title">{product.title}</h6></Link>
+                            ><h6 className="card-title" style={{maxHeight: "80px", overflow: "hidden"}}>{product.title}</h6></Link>
                             <p className="card-text" style={{height: "100px", overflow: "hidden"}}>{product.description}</p>
                             <p className="card-text"><small className="text-muted">{product.price} USD</small></p>
                         </div>
