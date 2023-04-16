@@ -1,110 +1,143 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { Button, Form, Input, Radio } from 'antd';
 import { toast, ToastContainer } from "react-toastify";
-import { findBuyerByUsernameAndPasswordThunk } from "../../services/buyer-thunks";
+import { buyerLoginThunk } from "../../services/buyer-thunks";
+import { sellerLoginThunk } from "../../services/seller-thunks";
+import { clearLogin } from "../../reducers/user-reducer";
 import "./Login.css";
+
 
 const Login = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const currentUser = useSelector(state => state.currentUserData.currentUser);
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
+    const currentUser = useSelector(state => state.user.profile);
+    const { lastAttempt, error } = useSelector(state => state.user);
 
-    const handleUsername = (event) => {
-        setUsername(event.target.value);
-    }
-    const handlePassword = (event) => {
-        setPassword(event.target.value);
-    }
-
-    const validateUsername = () => {
-        return username === '' || username === undefined
-    }
-
-    const validatePassword = () => {
-        return password === '' || password === undefined || password.length < 6;
-    }
-
-    const handleLogin = async () => {
-        if (!validateUsername() && !validatePassword()) {
-            dispatch(findBuyerByUsernameAndPasswordThunk({ username, password }))
-        } else {
-            toast.error('Cannot find a user with entered username and password!', {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-            });
-        }
-    }
     useEffect(() => {
-        if (currentUser !== null && Object.keys(currentUser).length !== 0 && currentUser !== undefined) {
-            // Navigate to the new page
-            navigate(-1);
-        } else {
-            toast.error('Cannot find a user with entered username and password!', {
+        return () => error && dispatch(clearLogin())
+    }, [])
+
+    useEffect(() => {
+        if (error && !currentUser) {
+            toast.error(`Login failed! ${error}!`, {
                 position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
+                autoClose: 2000,
+                hideProgressBar: true,
                 closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
+                pauseOnHover: false,
+                draggable: false,
                 progress: undefined,
                 theme: "colored",
             });
+        } else if (currentUser) {
+            toast.success("Login successful!", {
+                position: "bottom-right",
+                autoClose: 1000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                progress: undefined,
+                theme: "colored",
+            });
+            navigate('/');
         }
-    }, [currentUser]);
+    }, [lastAttempt])
+
+    const onFinish = async (values) => {
+        console.log('Login Attempted:', values)
+        const { username, password, usertype } = values
+        if (usertype == 'buyer') {
+            dispatch(buyerLoginThunk({ username, password }))
+        } else {
+            dispatch(sellerLoginThunk({ username, password }))
+        }
+    }
+
+    const onFinishFailed = (errorInfo) => {
+        console.log('Login Attempt Failed:', errorInfo)
+        toast.error("Error in username/password!", {
+            position: "bottom-right",
+            autoClose: 1000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "colored",
+        });
+    }
 
     return (
-        <div className="mt-3 background-radial-gradient overflow-hidden">
-            <div className="px-4 py-5 px-md-5 text-center text-lg-start my-5">
-                <div className="row gx-lg-5 align-items-center mb-5">
-                    <div className="col-lg-6 mb-5 mb-lg-0" style={{ zIndex: 10 }}>
-                        <h1 className="my-5 display-5 fw-bold ls-tight" style={{ color: "hsl(218, 81%, 95%)" }}>
-                            The best offer <br />
-                            <span style={{ color: "#b04141" }}>for your business</span>
-                        </h1>
-                    </div>
 
+        <div className="background-radial-gradient overflow-hidden">
+            <div className="px-4 py-5 px-md-5 text-center text-lg-start my-5">
+                <div className="row gx-lg-5 justify-content-center mb-5">
                     <div className="col-lg-6 mb-5 mb-lg-0 position-relative">
                         <div id="radius-shape-1" className="position-absolute rounded-circle shadow-5-strong" />
                         <div id="radius-shape-2" className="position-absolute shadow-5-strong" />
 
                         <div className="card bg-glass">
-                            <div className="card-body px-4 py-5 px-md-5">
-                                <div className="form-outline mb-4">
-                                    <input type="email" id="username" className={`form-control ${validateUsername() ? "is-invalid" : "is-valid"}`} value={username} onChange={handleUsername} />
-                                    <label className="form-label" htmlFor="username">Username</label>
-                                </div>
+                            <div className="card-body px-4 py-5 px-md-5 d-flex flex-column justify-content-center">
+                                <h1>Login</h1>
 
-                                <div className="form-outline mb-4">
-                                    <input type="password" id="password" className={`form-control ${validatePassword() ? "is-invalid" : "is-valid"}`} value={password} onChange={handlePassword} />
-                                    <label className="form-label" htmlFor="password">Password</label>
-                                </div>
+                                <Form
+                                    name="login"
+                                    style={{ maxWidth: 600 }}
+                                    initialValues={{ usertype: 'buyer' }}
+                                    onFinish={onFinish}
+                                    onFinishFailed={onFinishFailed}
+                                >
+                                    <Form.Item
+                                        label="Username"
+                                        name="username"
+                                        rules={[{ required: true, message: 'Please input your username!' }]}
+                                    >
+                                        <Input />
+                                    </Form.Item>
 
-                                <button className="btn btn-block mb-4" style={{ backgroundColor: "coral", color: "white" }} onClick={handleLogin}>
-                                    Log In
-                                </button>
-                                <div>Don't have an account? <Link to="/register" style={{ color: "coral" }} >Register
-                                    here</Link></div>
+                                    <Form.Item
+                                        label="Password"
+                                        name="password"
+                                        rules={[
+                                            { required: true, message: 'Please input your password!' },
+                                            { min: 6, message: 'Password must contain minimum 6 characters!' }
+                                        ]}
+                                    >
+                                        <Input.Password />
+                                    </Form.Item>
+
+                                    <Form.Item
+                                        label="User Type"
+                                        name="usertype"
+                                        rules={[{ required: true, message: 'Please select user type!' }]}
+                                    >
+                                        <Radio.Group>
+                                            <Radio value="buyer"> Buyer </Radio>
+                                            <Radio value="seller"> Seller </Radio>
+                                        </Radio.Group>
+                                    </Form.Item>
+
+                                    <Form.Item wrapperCol={{ offset: 4, span: 16 }}>
+                                        <Button type="primary" htmlType="submit" style={{ backgroundColor: "coral", color: "white" }}>
+                                            Login
+                                        </Button>
+                                    </Form.Item>
+                                </Form>
+
+                                <div>Don't have an account? <Link to="/register" style={{ color: "coral" }} >Register here</Link></div>
                             </div>
                         </div>
-
                     </div>
-
                     <ToastContainer />
                 </div>
             </div>
         </div>
-    );
+    )
 }
 
 export default Login;

@@ -1,81 +1,56 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { createBuyerThunk } from "../../services/buyer-thunks";
+import { buyerRegisterThunk } from "../../services/buyer-thunks";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Register.css';
+import { Button, Checkbox, DatePicker, Form, Input, Radio, Select } from "antd";
+import { sellerRegisterThunk } from "../../services/seller-thunks";
 
 const Register = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const [firstName, setFirstName] = useState('');
-    const handleFirstName = (event) => setFirstName(event.target.value)
+    const [isSeller, setIsSeller] = useState(false)
 
-    const [lastName, setLastName] = useState('');
-    const handleLastName = (event) => setLastName(event.target.value)
+    const onFinish = async (values) => {
+        console.log('Register Attempted:', values)
+        const { usertype, first_name, last_name, email, username, password, gender, dob, address1, address2, city, state, zipcode, phone } = values
+        const address = {
+            address1,
+            address2,
+            city,
+            state,
+            zipcode,
+            incareof: first_name + " " + last_name
+        }
+        if (usertype == 'buyer') {
+            const newUser = {
+                username,
+                password,
+                first_name,
+                last_name,
+                email,
+                addresses: [address],
+                phone,
+                gender,
+                dob: new Date(dob).getTime()
+            }
+            dispatch(buyerRegisterThunk(newUser))
+        } else {
+            const newUser = {
+                username,
+                password,
+                name: first_name + " " + last_name,
+                email,
+                business_address: address,
+                phone,
+            }
+            dispatch(sellerRegisterThunk(newUser))
+        }
 
-    const [email, setEmail] = useState('');
-    const handleEmail = (event) => setEmail(event.target.value)
-
-    const [username, setUserName] = useState('');
-    const handleUsername = (event) => setUserName(event.target.value)
-
-    const [password, setPassword] = useState('');
-    const handlePassword = (event) => setPassword(event.target.value)
-
-    const [dob, setDOB] = useState(undefined);
-    const handleDOB = (event) => setDOB(new Date(event.target.value))
-
-    const [gender, setGender] = useState('Female');
-    const handleGender = (event) => setGender(event.target.value)
-
-    const [address1, setAddress1] = useState('');
-    const handleAddress1 = (event) => setAddress1(event.target.value);
-
-    const [address2, setAddress2] = useState('');
-    const handleAddress2 = (event) => setAddress2(event.target.value)
-
-    const [city, setCity] = useState('');
-    const handleCity = (event) => setCity(event.target.value)
-
-    const [state, setState] = useState('');
-    const handleState = (event) => setState(event.target.value)
-
-    const [zip, setZip] = useState('');
-    const handleZip = (event) => setZip(event.target.value)
-
-    const [phone, setPhone] = useState('');
-    const handlePhone = (event) => setPhone(event.target.value)
-
-    const [termsAccepted, setTermsAccepted] = useState(false);
-    const handleTermsAccepted = (event) => {
-        setTermsAccepted(event.target.checked)
-    }
-
-    const validateString = (input) => input === '' || input === undefined
-    const validateEmail = () => email === undefined || email === '' || !/^[^@ ]+@[^@ ]+\.[^@ \.]+$/.test(email)
-    const validatePassword = () => password === '' || password === undefined || password.length < 6
-    const validatePhone = () => phone === '' || phone === undefined || !/[0-9]/.test(phone) || phone.length !== 10
-    const validateDOB = () => dob === undefined
-    const validateZip = () => zip === '' || zip === undefined || !/[0-9]/.test(zip) || zip.length !== 5
-
-    const validationError = () => {
-        toast.error('Please make sure to enter all fields correctly!', {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-        });
-    }
-
-    const success = () => {
         toast.success('Registered successfully! :)', {
             position: "top-right",
             autoClose: 5000,
@@ -86,50 +61,22 @@ const Register = () => {
             progress: undefined,
             theme: "colored",
         });
+        navigate('/login')
     }
 
-
-    const handleRegister = () => {
-        if (!validateString(firstName)
-            && !validateString(lastName)
-            && !validateString(username)
-            && !validateString(address1)
-            && !validateString(city)
-            && !validateString(state)
-            && !validatePhone()
-            && !validateZip()
-            && !validatePassword()
-            && !validateDOB()
-            && !validateEmail()
-            && termsAccepted === true) {
-
-            const address = {
-                address1: address1,
-                address2: address2,
-                city: city,
-                state: state,
-                zipcode: zip,
-                incareof: firstName + " " + lastName
-            }
-            const newUser = {
-                username: username,
-                password: password,
-                first_name: firstName,
-                last_name: lastName,
-                email: email,
-                addresses: [address],
-                phone: 'TEST',
-                gender: gender,
-                dob: new Date(dob).getTime()
-            }
-            dispatch(createBuyerThunk(newUser));
-            success("Success");
-            navigate('/login');
-        } else {
-            validationError("Error");
-        }
+    const onFinishFailed = (errorInfo) => {
+        console.log('Register Attempt Failed:', errorInfo)
+        toast.error("Error in details entered!", {
+            position: "bottom-right",
+            autoClose: 1000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "colored",
+        });
     }
-
 
     return (
         <div className="container mt-4 mb-2">
@@ -137,241 +84,265 @@ const Register = () => {
                 <div className="col-12">
                     <div className="card card-registration card-registration-2" style={{ borderRadius: "15px" }}>
                         <div className="card-body p-0">
-                            <div className="row g-0">
-                                <div className="col-lg-6">
-                                    <div className="p-5">
-                                        <h3 className="fw-normal mb-5" style={{ color: "coral" }}> General Information </h3>
 
-                                        {/* Name */}
-                                        <div className="row">
-                                            <div className="col-md-6 mb-2 pb-2">
-                                                <div className="form-outline">
-                                                    <input
-                                                        type="text"
-                                                        id="firstName"
-                                                        className={`form-control form-control-lg ${validateString(firstName) ? "is-invalid" : "is-valid"}`}
-                                                        value={firstName}
-                                                        onChange={handleFirstName}
-                                                        required
-                                                    />
-                                                    <label className="form-label" htmlFor="firstName"> First name </label>
+                            <Form
+                                name="register"
+                                layout="vertical"
+                                initialValues={{ usertype: 'buyer' }}
+                                onFinish={onFinish}
+                                onFinishFailed={onFinishFailed}
+                            >
+                                <div className="row g-0">
+
+                                    <div className="col-lg-6">
+                                        <div className="p-5">
+                                            <h3 className="fw-normal mb-3" style={{ color: "coral" }}> General Information </h3>
+
+                                            {/* Name */}
+                                            <div className="row">
+                                                <div className="col-md-6 mb-1">
+                                                    <Form.Item
+                                                        label="First Name"
+                                                        name="first_name"
+                                                        rules={[{ required: true, message: 'Enter first name!' }]}
+                                                    >
+                                                        <Input />
+                                                    </Form.Item>
+                                                </div>
+                                                <div className="col-md-6 mb-1">
+                                                    <Form.Item
+                                                        label="Last Name"
+                                                        name="last_name"
+                                                        rules={[{ required: true, message: 'Enter last name!' }]}
+                                                    >
+                                                        <Input />
+                                                    </Form.Item>
                                                 </div>
                                             </div>
-                                            <div className="col-md-6 mb-2 pb-2">
-                                                <div className="form-outline">
-                                                    <input
-                                                        type="text"
-                                                        id="lastName"
-                                                        className={`form-control form-control-lg ${validateString(lastName) ? "is-invalid" : "is-valid"}`}
-                                                        value={lastName}
-                                                        onChange={handleLastName}
-                                                        required
-                                                    />
-                                                    <label className="form-label" htmlFor="lastName"> Last name </label>
-                                                </div>
+
+                                            <div className="mb-1">
+                                                <Form.Item
+                                                    label="User Type"
+                                                    name="usertype"
+                                                    rules={[{ required: true, message: 'Please select user type!' }]}
+                                                >
+                                                    <Radio.Group onChange={(e) => setIsSeller(e.target.value == 'seller')}>
+                                                        <Radio value="buyer"> Buyer </Radio>
+                                                        <Radio value="seller"> Seller </Radio>
+                                                    </Radio.Group>
+                                                </Form.Item>
                                             </div>
-                                        </div>
 
-                                        {/* Gender */}
-                                        <div className="mb-2 pb-2">
-                                            <select
-                                                className="form-select form-select-lg"
-                                                id="gender"
-                                                value={gender}
-                                                onChange={handleGender}
-                                                required
-                                            >
-                                                <option value="Female">Female</option>
-                                                <option value="Male">Male</option>
-                                                <option value="Other">Other</option>
-                                            </select>
-                                            <label className="form-label" htmlFor="gender">Gender</label>
-                                        </div>
+                                            {/* Email */}
+                                            <div className="mb-1">
+                                                <Form.Item
+                                                    label="Email"
+                                                    name="email"
+                                                    rules={[
+                                                        { required: true, message: 'Enter email id!' },
+                                                        { type: "email", message: 'Invalid email!' }
+                                                    ]}
+                                                >
+                                                    <Input />
+                                                </Form.Item>
 
-                                        {/* DoB */}
-                                        <div className="mb-2 pb-2">
-                                            <div className="form-outline">
-                                                <input
-                                                    type="date"
-                                                    id="dob"
-                                                    className={`form-control form-control-lg  ${validateDOB() ? "is-invalid" : "is-valid"}`}
-                                                    onChange={handleDOB}
-                                                    required
-                                                />
-                                                <label className="form-label" htmlFor="dob">Date of Birth</label>
                                             </div>
-                                        </div>
 
-                                        {/* Email */}
-                                        <div className="mb-2 pb-2">
-                                            <div className="form-outline">
-                                                <input
-                                                    type="text"
-                                                    id="email"
-                                                    className={`form-control form-control-lg ${validateEmail() ? "is-invalid" : "is-valid"}`}
-                                                    value={email}
-                                                    onChange={handleEmail}
-                                                    required
-                                                />
-                                                <label className="form-label" htmlFor="email">Email</label>
+                                            {/* Username */}
+                                            <div className="mb-1">
+                                                <Form.Item
+                                                    label="Username"
+                                                    name="username"
+                                                    rules={[{ required: true, message: 'Please input your username!' }]}
+                                                >
+                                                    <Input />
+                                                </Form.Item>
                                             </div>
-                                        </div>
 
-                                        {/* Username */}
-                                        <div className="mb-2 pb-2">
-                                            <div className="form-outline">
-                                                <input
-                                                    type="text"
-                                                    id="username"
-                                                    className={`form-control form-control-lg ${validateString(username) ? "is-invalid" : "is-valid"}`}
-                                                    value={username}
-                                                    onChange={handleUsername}
-                                                    required />
-                                                <label className="form-label" htmlFor="username">Username</label>
+                                            {/* Password */}
+                                            <div className="mb-1">
+                                                <Form.Item
+                                                    name="password"
+                                                    label="Password"
+                                                    rules={[
+                                                        { required: true, message: 'Please input your password!' },
+                                                        { min: 6, message: 'Password must contain minimum 6 characters!' }]}
+                                                    hasFeedback
+                                                >
+                                                    <Input.Password />
+                                                </Form.Item>
                                             </div>
-                                        </div>
 
-                                        {/* Password */}
-                                        <div className="mb-2 pb-2">
-                                            <div className="form-outline">
-                                                <input
-                                                    type="password"
-                                                    id="password"
-                                                    className={`form-control form-control-lg ${validatePassword() ? "is-invalid" : "is-valid"}`}
-                                                    value={password}
-                                                    onChange={handlePassword}
-                                                    required />
-                                                <label className="form-label" htmlFor="password">Password</label>
+                                            {/* Confirm Password */}
+                                            <div className="mb-1">
+                                                <Form.Item
+                                                    name="confirm"
+                                                    label="Confirm Password"
+                                                    dependencies={['password']}
+                                                    hasFeedback
+                                                    rules={[
+                                                        { required: true, message: 'Please confirm your password!' },
+                                                        ({ getFieldValue }) => ({
+                                                            validator(_, value) {
+                                                                if (!value || getFieldValue('password') === value) {
+                                                                    return Promise.resolve();
+                                                                }
+                                                                return Promise.reject(new Error('The two passwords that you entered do not match!'));
+                                                            },
+                                                        }),
+                                                    ]}
+                                                >
+                                                    <Input.Password />
+                                                </Form.Item>
                                             </div>
-                                        </div>
 
+                                            {/* DoB */}
+                                            {!isSeller && <div className="mb-1">
+                                                <Form.Item
+                                                    label="Date of Birth"
+                                                    name="dob"
+                                                    rules={[{ required: true, message: 'Enter date of birth!' }]}
+                                                >
+                                                    <DatePicker style={{ width: '100%' }} />
+                                                </Form.Item>
+                                            </div>}
+
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div className="col-lg-6 bg-indigo text-white">
-                                    <div className="p-5">
-                                        <h3 className="fw-normal mb-5">Contact Details</h3>
+                                    <div className="col-lg-6 bg-indigo text-white">
+                                        <div className="p-5">
+                                            <h3 className="fw-normal mb-3">Contact Details</h3>
 
-                                        {/* Street */}
-                                        <div className="mb-2 pb-2">
-                                            <div className="form-outline form-white">
-                                                <input
-                                                    type="text"
-                                                    id="address1"
-                                                    className={`form-control form-control-lg ${validateString(address1) ? "is-invalid" : "is-valid"}`}
-                                                    value={address1}
-                                                    onChange={handleAddress1}
-                                                    required
-                                                />
-                                                <label className="form-label" htmlFor="address1">Street Address</label>
-                                            </div>
-                                        </div>
+                                            {/* Gender */}
+                                            {!isSeller && <div className="mb-1">
+                                                <Form.Item
+                                                    label="Gender"
+                                                    name="gender"
+                                                    rules={[{ required: true, message: 'Select a gender!' }]}
+                                                >
+                                                    <Select>
+                                                        <Select.Option value="Male">Male</Select.Option>
+                                                        <Select.Option value="Female">Female</Select.Option>
+                                                    </Select>
+                                                </Form.Item>
+                                            </div>}
 
-                                        {/* Street 2 */}
-                                        <div className="mb-2 pb-2">
-                                            <div className="form-outline form-white">
-                                                <input
-                                                    type="text"
-                                                    id="address2"
-                                                    className="form-control form-control-lg"
-                                                    value={address2}
-                                                    onChange={handleAddress2}
-                                                />
-                                                <label className="form-label" htmlFor="address2">Street Address Line 2</label>
-                                            </div>
-                                        </div>
-
-                                        {/* City & State */}
-                                        <div className="row">
-                                            <div className="col-md-5 mb-2 pb-2">
-                                                <div className="form-outline form-white">
-                                                    <input
-                                                        type="text"
-                                                        id="city"
-                                                        className={`form-control form-control-lg ${validateString(city) ? "is-invalid" : "is-valid"}`}
-                                                        value={city}
-                                                        onChange={handleCity}
-                                                        required
+                                            {/* Phone */}
+                                            <div className="mb-2">
+                                                <Form.Item
+                                                    name="phone"
+                                                    label="Phone Number"
+                                                    rules={[
+                                                        { required: true, message: 'Please input your phone number!' },
+                                                        { len: 10, message: 'Must contain 10 digits!' },
+                                                    ]}
+                                                >
+                                                    <Input
+                                                        style={{ width: '100%' }}
+                                                        addonBefore={
+                                                            <Select style={{ width: 80 }}>
+                                                                <Select.Option>{"(+1)"}</Select.Option>
+                                                            </Select>
+                                                        }
                                                     />
-                                                    <label className="form-label" htmlFor="city">City</label>
+                                                </Form.Item>
+                                            </div>
+                                            {/* Street */}
+                                            <div className="mb-1">
+                                                <Form.Item
+                                                    label="Street Address 1"
+                                                    name="address1"
+                                                    rules={[{ required: true, message: 'Cannot be empty!' }]}
+                                                >
+                                                    <Input />
+                                                </Form.Item>
+                                            </div>
+
+                                            {/* Street 2 */}
+                                            <div className="mb-1">
+                                                <Form.Item
+                                                    label="Street Address 2"
+                                                    name="address2"
+                                                >
+                                                    <Input />
+                                                </Form.Item>
+                                            </div>
+
+                                            {/* City & State */}
+                                            <div className="row">
+                                                <div className="col-md-6 mb-1">
+                                                    <Form.Item
+                                                        label="City"
+                                                        name="city"
+                                                        rules={[{ required: true, message: 'Enter city name!' }]}
+                                                    >
+                                                        <Input />
+                                                    </Form.Item>
+                                                </div>
+                                                <div className="col-md-6 mb-1">
+                                                    <Form.Item
+                                                        label="State"
+                                                        name="state"
+                                                        rules={[{ required: true, message: 'Enter state name!' }]}
+                                                    >
+                                                        <Input />
+                                                    </Form.Item>
                                                 </div>
                                             </div>
-                                            <div className="col-md-7 mb-2 pb-2">
-                                                <div className="form-outline form-white">
-                                                    <input type="text" id="state"
-                                                        className={`form-control form-control-lg ${validateString(state) ? "is-invalid" : "is-valid"}`}
-                                                        value={state}
-                                                        onChange={handleState}
-                                                        required />
-                                                    <label className="form-label" htmlFor="state">State</label>
-                                                </div>
+
+                                            {/* Zipcode */}
+                                            <div className="mb-1">
+                                                <Form.Item
+                                                    label="Zipcode"
+                                                    name="zipcode"
+                                                    rules={[
+                                                        { required: true, message: 'Enter zipcode!' },
+                                                        { len: 5, message: 'Must contain 5 digits!' }
+                                                    ]}
+                                                >
+                                                    <Input type="number" />
+                                                </Form.Item>
                                             </div>
-                                        </div>
 
-                                        {/* Zipcode */}
-                                        <div className="mb-2 pb-2">
-                                            <div className="form-outline form-white">
-                                                <input
-                                                    type="text"
-                                                    id="zip"
-                                                    className={`form-control form-control-lg  ${validateZip() ? "is-invalid" : "is-valid"}`}
-                                                    value={zip}
-                                                    onChange={handleZip}
-                                                    required />
-                                                <label className="form-label" htmlFor="zip">Zip Code</label>
+
+
+                                            {/* TnC */}
+                                            <div className="mb-1">
+                                                <Form.Item
+                                                    name="agreement"
+                                                    valuePropName="checked"
+                                                    rules={[
+                                                        { validator: (_, value) => value ? Promise.resolve() : Promise.reject(new Error('Should accept agreement')) },
+                                                    ]}
+                                                >
+                                                    <Checkbox> I do accept the<a href="">Terms and Conditions</a> of this website</Checkbox>
+                                                </Form.Item>
                                             </div>
+
+                                            {/* Register Button */}
+                                            <Form.Item>
+                                                <Button type="primary" htmlType="submit"
+                                                    style={{ fontWeight: "bold", backgroundColor: "white", color: "coral" }}
+                                                >
+                                                    Register
+                                                </Button>
+                                            </Form.Item>
+
+
+                                            <ToastContainer />
                                         </div>
-
-                                        {/* Phone */}
-                                        <div className="mb-2 pb-2">
-                                            <div className="form-outline form-white">
-                                                <input
-                                                    type="text"
-                                                    id="phone"
-                                                    className={`form-control form-control-lg  ${validatePhone() ? "is-invalid" : "is-valid"}`}
-                                                    value={phone}
-                                                    onChange={handlePhone}
-                                                    required />
-                                                <label className="form-label" htmlFor="phone">Phone Number</label>
-                                            </div>
-                                        </div>
-
-                                        {/* TnC */}
-                                        <div className="form-check d-flex justify-content-start mb-2 pb-3">
-                                            <input
-                                                className="form-check-input me-3"
-                                                type="checkbox"
-                                                id="terms"
-                                                onClick={handleTermsAccepted}
-                                                required
-                                            />
-                                            <label
-                                                className="form-check-label text-white"
-                                                htmlFor="terms"
-                                            >
-                                                I do accept the <a href="#" className="text-white"><u>Terms and Conditions</u></a> of your site.
-                                            </label>
-                                        </div>
-
-                                        {/* Register Button */}
-                                        <button
-                                            type="button"
-                                            className="btn btn-light btn-lg"
-                                            data-mdb-ripple-color="dark"
-                                            onClick={handleRegister}
-                                        >
-                                            Register
-                                        </button>
-
-                                        <ToastContainer />
                                     </div>
+
+
                                 </div>
-                            </div>
+                            </Form>
+
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }
 

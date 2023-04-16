@@ -3,9 +3,7 @@ import { useSelector } from "react-redux";
 
 const Profile = () => {
 
-    const { currentUser } = useSelector(state => state.currentUserData)
-
-    console.log(currentUser)
+    const currentUser = useSelector(state => state.user.profile)
 
     const getFormattedDate = (timestamp) => {
         const date = new Date(timestamp);
@@ -48,7 +46,7 @@ const Profile = () => {
                 <br /><br />
                 {currentUser.addresses.map((addr, idx) =>
                     <div>
-                        <h6 style={{textDecoration:'underline'}}>Address {idx + 1}</h6>
+                        <h6 style={{ textDecoration: 'underline' }}>Address {idx + 1}</h6>
 
                         <span>{addr.incareof}</span>
                         <br />

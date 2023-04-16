@@ -1,14 +1,14 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { logoutUser } from "../../reducers/current-user-reducer";
+import { logoutUser } from "../../reducers/user-reducer";
 import 'react-toastify/dist/ReactToastify.css';
 
 const Navbar = () => {
 
     const dispatch = useDispatch();
 
-    const currentUser = useSelector(state => state.currentUserData.currentUser);
+    const currentUser = useSelector(state => state.user.profile);
 
     const handleLogout = () => {
         dispatch(logoutUser());
@@ -42,18 +42,7 @@ const Navbar = () => {
                         style={{ color: "coral", textDecoration: "none" }}
                         to="/login"
                     >
-                        Login
-                    </Link>
-                </li>}
-
-            {!isLoggedIn() &&
-                <li className="nav nav-item ps-2 pe-2">
-                    <Link
-                        className="logout wd-logout-btn btn btn-light wd-round-btn"
-                        style={{ color: "coral", textDecoration: "none" }}
-                        to="/register"
-                    >
-                        Register
+                        Login/Register
                     </Link>
                 </li>}
 

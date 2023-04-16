@@ -17,7 +17,7 @@ function App() {
     return (
         <BrowserRouter>
             <Navbar />
-            <div className="container">
+            <div className="w-100 h-100" style={{minHeight: "50vh"}}>
                 <Routes>
                     <Route index element={<Home />} />
                     <Route path="/products/:id" element={<Product />} />

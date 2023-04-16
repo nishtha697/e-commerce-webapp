@@ -8,8 +8,7 @@ import { combineReducers, configureStore, getDefaultMiddleware } from '@reduxjs/
 import { Provider } from "react-redux";
 import { logger } from "redux-logger";
 import productsReducer from "./reducers/products-reducer.js";
-import buyersReducer from "./reducers/buyers-reducer.js";
-import currentUserReducer from "./reducers/current-user-reducer.js";
+import userReducer from "./reducers/user-reducer.js";
 import storage from "redux-persist/lib/storage";
 import persistReducer from 'redux-persist/es/persistReducer';
 import persistStore from 'redux-persist/es/persistStore';
@@ -24,8 +23,7 @@ const store = configureStore(
   {
     reducer: persistReducer(persistConfig, combineReducers({
       productsData: productsReducer,
-      buyersData: buyersReducer,
-      currentUserData: currentUserReducer
+      user: userReducer
     })),
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }).concat(logger)
   });

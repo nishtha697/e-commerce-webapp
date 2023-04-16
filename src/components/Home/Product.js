@@ -12,7 +12,7 @@ const Product = () => {
     let product = useSelector(state => state.productsData.currentProduct);
     let [quantity, setQuantity] = useState(1);
 
-    const currentUser = useSelector(state => state.currentUserData.currentUser);
+    const currentUser = useSelector(state => state.user.profile);
     const isLoggedIn = () => {
         return !(currentUser === null || Object.keys(currentUser).length === 0 || currentUser === undefined)
     }
@@ -67,8 +67,8 @@ const Product = () => {
                                 onChange={handleChange} />
                             <button className="btn btn-outline-success" style={{ display: "inline" }} disabled={!isLoggedIn()}>
                                 Add to Cart
-                            </button> 
-                            {!isLoggedIn() && <div><i style={{color: "red"}}>Login to add product to cart</i></div>}
+                            </button>
+                            {!isLoggedIn() && <div><i style={{ color: "red" }}>Login to add product to cart</i></div>}
                         </div>
 
                         <p className="card-text">Total Price: <b>${(quantity * product.price).toFixed(2)}</b></p>
