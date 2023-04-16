@@ -1,34 +1,38 @@
-import {createSlice} from "@reduxjs/toolkit";
-import {findBuyerByUsernameAndPasswordThunk,} from "../services/buyer-thunks.js";
+import { createSlice } from "@reduxjs/toolkit";
+import { findBuyerByUsernameAndPasswordThunk } from "../services/buyer-thunks.js";
 
 const initialState = {
-    currentUser: JSON.parse(localStorage.getItem('currentUser')) || {},
-    type: ''
+    currentUser: null,
+    type: '',
+    error: null
 }
 
 const userSlice = createSlice(
     {
         name: 'currentUser',
         initialState,
+        reducers: {
+            logoutUser: (state) => {
+                state.currentUser = null;
+                state.type = '';
+                state.error = null;
+            }
+        },
         extraReducers: {
-            [findBuyerByUsernameAndPasswordThunk.fulfilled] :
+            [findBuyerByUsernameAndPasswordThunk.fulfilled]:
                 (state, { payload }) => {
-                    state.currentUser = payload
-                    state.type = "buyer" //need to fix
-                    localStorage.setItem('currentUser', JSON.stringify(payload));
+                    state.currentUser = payload;
+                    state.type = "buyer"; //need to fix
+                },
+            [findBuyerByUsernameAndPasswordThunk.rejected]:
+                (state, { payload }) => {
+                    state.currentUser = null;
+                    state.type = '';
+                    state.error = 'Username/password is incorrect';
                 },
         },
-        reducers: {
-            loadUserFromStorage: (state) => {
-                state.currentUser = JSON.parse(localStorage.getItem('currentUser')) || {};
-            },
-            logoutUser: (state) => {
-                state.currentUser = {};
-                localStorage.removeItem('currentUser');
-            }
-        }
+
     });
 
-export const { loadUserFromStorage, logoutUser } = userSlice.actions;
-
 export default userSlice.reducer;
+export const { logoutUser } = userSlice.actions;

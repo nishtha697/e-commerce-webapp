@@ -4,10 +4,42 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+import { combineReducers, configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
+import { Provider } from "react-redux";
+import { logger } from "redux-logger";
+import productsReducer from "./reducers/products-reducer.js";
+import buyersReducer from "./reducers/buyers-reducer.js";
+import currentUserReducer from "./reducers/current-user-reducer.js";
+import storage from "redux-persist/lib/storage";
+import persistReducer from 'redux-persist/es/persistReducer';
+import persistStore from 'redux-persist/es/persistStore';
+import { PersistGate } from 'redux-persist/integration/react';
+
+const persistConfig = {
+  key: 'root',
+  storage,
+}
+
+const store = configureStore(
+  {
+    reducer: persistReducer(persistConfig, combineReducers({
+      productsData: productsReducer,
+      buyersData: buyersReducer,
+      currentUserData: currentUserReducer
+    })),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }).concat(logger)
+  });
+
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistStore(store)}>
+        <App />
+      </PersistGate>
+    </Provider>
+
   </React.StrictMode>
 );
 

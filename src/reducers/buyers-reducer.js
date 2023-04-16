@@ -1,8 +1,9 @@
-import {createSlice} from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import {
     createBuyerThunk,
     findBuyersByIdThunk,
-    findBuyersThunk, updateBuyerThunk
+    findBuyersThunk,
+    updateBuyerThunk
 } from "../services/buyer-thunks.js";
 
 const initialState = {
@@ -14,6 +15,7 @@ const buyersSlice = createSlice(
     {
         name: 'buyers',
         initialState,
+        reducers: {},
         extraReducers: {
             [findBuyersThunk.pending]:
                 (state) => {
@@ -21,7 +23,7 @@ const buyersSlice = createSlice(
                     state.buyers = []
                 },
             [findBuyersThunk.fulfilled]:
-                (state, {payload}) => {
+                (state, { payload }) => {
                     state.loading = false
                     state.buyers = payload
                 },
@@ -30,11 +32,10 @@ const buyersSlice = createSlice(
                     state.loading = false
                     state.error = action.error
                 },
-            [findBuyersByIdThunk.fulfilled] :
+            [findBuyersByIdThunk.fulfilled]:
                 (state, { payload }) => {
                     state.loading = false
-                    const buyerIndex = state.buyers
-                        .findIndex((p) => p.buyer_id === payload.buyer_id)
+                    const buyerIndex = state.buyers.findIndex((p) => p.buyer_id === payload.buyer_id)
                     state.buyers[buyerIndex] = {
                         ...state.buyers[buyerIndex],
                         ...payload
@@ -45,18 +46,20 @@ const buyersSlice = createSlice(
                     state.loading = false
                     state.buyers.push(payload)
                 },
+            [createBuyerThunk.rejected]:
+                (state, action) => {
+                   console.log(action.payload)
+                },
             [updateBuyerThunk.fulfilled]:
                 (state, { payload }) => {
                     state.loading = false
-                    const buyerIndex = state.buyers
-                        .findIndex((p) => p.buyer_id === payload.buyer_id)
+                    const buyerIndex = state.buyers.findIndex((p) => p.buyer_id === payload.buyer_id)
                     state.buyers[buyerIndex] = {
                         ...state.buyers[buyerIndex],
                         ...payload
                     }
                 }
-        },
-        reducers: {}
+        }
     });
 
 export default buyersSlice.reducer;
