@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { findProductsByIdThunk } from "../../services/products-thunks";
+import { getProductByIdThunk } from "../../services/products-thunks";
 import { useDispatch, useSelector } from "react-redux";
 
 // Reload the product using api call to have up to date inventory
@@ -18,7 +18,7 @@ const Product = () => {
     }
 
     useEffect(() => {
-        dispatch(findProductsByIdThunk(id))
+        dispatch(getProductByIdThunk(id))
     }, [])
 
     const handleChange = (e) => {
@@ -26,7 +26,7 @@ const Product = () => {
     }
 
     return (
-        <div className="container mt-3 mb-2">
+        <div className="container m-5">
             {!product ? <li className="list-group-item"> Loading... </li> :
                 <div>
                     <div className="card-body">

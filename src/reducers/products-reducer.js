@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
     createProductThunk,
-    findProductsByIdThunk,
-    findProductsThunk,
+    getAllProductsThunk,
+    getProductByIdThunk,
+    getProductBySellerThunk,
     updateProductThunk
 } from "../services/products-thunks";
 
@@ -10,7 +11,7 @@ const initialState = {
     products: [],
     loading: false,
     error: null,
-    currentProduct : null
+    currentProduct: null
 }
 
 const productsSlice = createSlice(
@@ -19,25 +20,25 @@ const productsSlice = createSlice(
         initialState,
         reducers: {},
         extraReducers: {
-            [findProductsThunk.pending]:
+            [getAllProductsThunk.pending]:
                 (state) => {
                     state.loading = true
                     state.products = []
                     state.error = null
                 },
-            [findProductsThunk.fulfilled]:
+            [getAllProductsThunk.fulfilled]:
                 (state, { payload }) => {
                     state.loading = false
                     state.products = payload
                     state.error = null
                 },
-            [findProductsThunk.rejected]:
+            [getAllProductsThunk.rejected]:
                 (state, action) => {
                     state.loading = false
                     state.products = []
                     state.error = action.error
                 },
-            [findProductsByIdThunk.fulfilled]:
+            [getProductByIdThunk.fulfilled]:
                 (state, { payload }) => {
                     state.loading = false
                     const productIndex = state.products.findIndex((p) => p.product_id === payload.product_id)
@@ -45,7 +46,25 @@ const productsSlice = createSlice(
                         ...state.products[productIndex],
                         ...payload
                     }
-                    state.currentProduct = payload[0]
+                    state.currentProduct = payload
+                },
+            [getProductBySellerThunk.pending]:
+                (state) => {
+                    state.loading = true
+                    state.products = []
+                    state.error = null
+                },
+            [getProductBySellerThunk.fulfilled]:
+                (state, { payload }) => {
+                    state.loading = false
+                    state.products = payload
+                    state.error = null
+                },
+            [getProductBySellerThunk.rejected]:
+                (state, action) => {
+                    state.loading = false
+                    state.products = []
+                    state.error = action.error
                 },
             [createProductThunk.fulfilled]:
                 (state, { payload }) => {

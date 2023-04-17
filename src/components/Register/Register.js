@@ -26,7 +26,7 @@ const Register = () => {
             zipcode,
             incareof: first_name + " " + last_name
         }
-        if (usertype == 'buyer') {
+        if (usertype === 'buyer') {
             const newUser = {
                 username,
                 password,
@@ -126,7 +126,7 @@ const Register = () => {
                                                     name="usertype"
                                                     rules={[{ required: true, message: 'Please select user type!' }]}
                                                 >
-                                                    <Radio.Group onChange={(e) => setIsSeller(e.target.value == 'seller')}>
+                                                    <Radio.Group onChange={(e) => setIsSeller(e.target.value === 'seller')}>
                                                         <Radio value="buyer"> Buyer </Radio>
                                                         <Radio value="seller"> Seller </Radio>
                                                     </Radio.Group>

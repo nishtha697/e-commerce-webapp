@@ -15,7 +15,7 @@ const Login = () => {
     const navigate = useNavigate();
 
     const currentUser = useSelector(state => state.user.profile);
-    const { lastAttempt, error } = useSelector(state => state.user);
+    const { lastAttempt, error, type } = useSelector(state => state.user);
 
     useEffect(() => {
         return () => error && dispatch(clearLogin())
@@ -44,14 +44,15 @@ const Login = () => {
                 progress: undefined,
                 theme: "colored",
             });
-            navigate('/');
+            if (type === 'buyer') navigate('/');
+            else navigate('/seller/dashboard')
         }
     }, [lastAttempt])
 
     const onFinish = async (values) => {
         console.log('Login Attempted:', values)
         const { username, password, usertype } = values
-        if (usertype == 'buyer') {
+        if (usertype === 'buyer') {
             dispatch(buyerLoginThunk({ username, password }))
         } else {
             dispatch(sellerLoginThunk({ username, password }))
