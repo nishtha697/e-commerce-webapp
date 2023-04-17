@@ -67,9 +67,10 @@ const ProductListings = () => {
             ellipsis: true,
             align: 'center',
             sorter: (a, b) => a.inventory - b.inventory,
+            render: (inventory, record) => (<div>{record.unavailable ? "Not Available": inventory}</div>),
         },
         {
-            title: 'Total Orders',
+            title: '# Orders',
             dataIndex: 'numorders',
             key: 'numorders',
             width: "10%",
@@ -91,9 +92,13 @@ const ProductListings = () => {
     ];
 
     return (
-        <div className="m-5">
+        <div>
             {loading ? <li className="list-group-item"> Loading... </li> :
-                <Table columns={columns} dataSource={products} />}
+                <Table
+                    columns={columns}
+                    dataSource={products}
+                    rowKey={(row) => row.product_id}
+                />}
         </div>
     );
 }

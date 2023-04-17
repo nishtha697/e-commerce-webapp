@@ -37,6 +37,8 @@ export const createProductThunk = createAsyncThunk('products/create',
 
 export const updateProductThunk = createAsyncThunk('products/update',
     async (product) => {
-        await axios.put(`${PRODUCTS_API}/${product.product_id}`, product);
-        return product;
+        const response = await axios.put(`${PRODUCTS_API}/${product.product_id}`, product);
+        if (response.data.acknowledged === true) {
+            return product;
+        }
     })

@@ -12,28 +12,34 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import Profile from "./components/Profile/Profile";
 import Dashboard from "./components/SellerDashboard/Dashboard";
 import ProductListings from "./components/SellerDashboard/ProductListings";
+import { useSelector } from "react-redux";
 
 
 function App() {
-    return (
-        <BrowserRouter>
-            <Navbar />
-            <div className="w-100 h-100" style={{ minHeight: "50vh" }}>
-                <Routes>
-                    <Route index element={<Home />} />
-                    <Route path="/products/:id" element={<Product />} />
-                    <Route path="/cart" element={<div>TODO BUYER CART</div>} />
-                    <Route path="/orders" element={<div>TODO BUYER ORDERS</div>} />
-                    <Route path="/seller/dashboard" element={<Dashboard />} />
-                    <Route path="/seller/productlistings" element={<ProductListings />} />
-                    <Route path="/seller/orders" element={<div>TODO SELLER ORDERS</div>} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/login" element={<Login />} />
-                </Routes>
-            </div>
-        </BrowserRouter>
 
+    const user = useSelector(state => state.user)
+    return (
+        <div style={{ width: "100%" }}>
+            <BrowserRouter>
+                <Navbar />
+                <div className="m-5" style={{ minHeight: "50vh" }}>
+                    <Routes>
+                        <Route path="/products/:id" element={<Product />} />
+                        {user.type !== "seller" && <Route index element={<Home />} />}
+                        {user.type === "buyer" && <Route path="/cart" element={<div>TODO BUYER CART</div>} />}
+                        {user.type === "buyer" && <Route path="/orders" element={<div>TODO BUYER ORDERS</div>} />}
+                        {user.type === "seller" && <Route path="/seller/dashboard" element={<Dashboard />} />}
+                        {user.type === "seller" && <Route path="/seller/productlistings" element={<ProductListings />} />}
+                        {user.type === "seller" && <Route path="/seller/orders" element={<div>TODO SELLER ORDERS</div>} />}
+                        {user.type !== "" && <Route path="/profile" element={<Profile />} />}
+                        {user.type === "" && <Route path="/register" element={<Register />} />}
+                        <Route path="/login" element={<Login />} />
+                        <Route path="*" element={<div>INVALID PAGE</div>} />
+                    </Routes>
+                </div>
+            </BrowserRouter>
+
+        </div>
     );
 }
 

@@ -22,9 +22,7 @@ const productsSlice = createSlice(
         extraReducers: {
             [getAllProductsThunk.pending]:
                 (state) => {
-                    state.loading = true
-                    state.products = []
-                    state.error = null
+                    state.currentProduct = null
                 },
             [getAllProductsThunk.fulfilled]:
                 (state, { payload }) => {
@@ -41,11 +39,6 @@ const productsSlice = createSlice(
             [getProductByIdThunk.fulfilled]:
                 (state, { payload }) => {
                     state.loading = false
-                    const productIndex = state.products.findIndex((p) => p.product_id === payload.product_id)
-                    state.products[productIndex] = {
-                        ...state.products[productIndex],
-                        ...payload
-                    }
                     state.currentProduct = payload
                 },
             [getProductBySellerThunk.pending]:
@@ -66,20 +59,19 @@ const productsSlice = createSlice(
                     state.products = []
                     state.error = action.error
                 },
+            [updateProductThunk.fulfilled]:
+                (state, { payload }) => {
+                    state.loading = false
+                    if (payload) {
+                        state.currentProduct = payload
+                    }
+                },
             [createProductThunk.fulfilled]:
                 (state, { payload }) => {
                     state.loading = false
                     state.products.push(payload)
-                },
-            [updateProductThunk.fulfilled]:
-                (state, { payload }) => {
-                    state.loading = false
-                    const productIndex = state.products.findIndex((p) => p.product_id === payload.product_id)
-                    state.products[productIndex] = {
-                        ...state.products[productIndex],
-                        ...payload
-                    }
                 }
+
         }
     });
 

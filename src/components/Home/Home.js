@@ -14,22 +14,27 @@ const Home = () => {
     }, [])
 
     return (
-        <div className="m-5">
+        <div>
             {loading && <li className="list-group-item"> Loading... </li>}
-            <div className="row row-cols-1 row-cols-md-3 g-4 mt-2 mb-2">
+            <div className="row mx-auto mt-2 mb-2 g-4 align-items-stretch">
                 {products.map((product, idx) =>
                     <div className="col" key={idx}>
-                        <div className="card" style={{ height: "400px" }}>
-                            <img src={product.product_image} className="card-img-top" style={{ height: "250px" }} alt={product.title} />
+                        <div className="card" style={{ height: "400px", minWidth: "300px", maxWidth: "400px", border: "0px" }}>
+                            <img src={product.product_image} className="card-img-top" style={{ height: "200px", width: "auto" }} alt={product.title} />
                             <div className="card-body">
                                 <Link
                                     className="wd-user"
                                     to={`/products/${product.product_id}`}
                                     style={{ textDecoration: "none" }}
-                                ><h6 className="card-title" style={{ maxHeight: "80px", overflow: "hidden" }}>{product.title}</h6></Link>
-                                {/* <p className="card-text" style={{ height: "100px", overflow: "hidden" }}>{product.description}</p> */}
-                                <p className="card-text"><small className="text-muted">{product.price} USD</small></p>
+                                >
+                                    <h6 className="card-title" style={{ maxHeight: "80px", overflow: "hidden" }}>{product.title}</h6>
+                                    <p className="card-text"><small className="text-muted">Sold by {product.seller}</small></p>
+                                </Link>
+                                <div className="mt-auto">
+                                    <p className="card-text"><small>${product.price}</small></p>
+                                </div>
                             </div>
+
                         </div>
                     </div>
                 )}

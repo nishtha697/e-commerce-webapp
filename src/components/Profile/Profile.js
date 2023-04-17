@@ -19,7 +19,7 @@ const Profile = () => {
 
     return (
 
-        <div className="m-5">
+        <div>
             <Avatar
                 size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
                 icon={<UserOutlined />}
