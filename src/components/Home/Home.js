@@ -17,8 +17,9 @@ const Home = () => {
         <div>
             {loading && <li className="list-group-item"> Loading... </li>}
             <div className="row mx-auto mt-2 mb-2 g-4 align-items-stretch">
-                {products.map((product, idx) =>
-                    <div className="col" key={idx}>
+                {products
+                    .filter((prod) => !prod.unavailable)
+                    .map((product, idx) => <div className="col" key={idx}>
                         <div className="card" style={{ height: "400px", minWidth: "300px", maxWidth: "400px", border: "0px" }}>
                             <img src={product.product_image} className="card-img-top" style={{ height: "200px", width: "auto" }} alt={product.title} />
                             <div className="card-body">
@@ -34,10 +35,9 @@ const Home = () => {
                                     <p className="card-text"><small>${product.price}</small></p>
                                 </div>
                             </div>
-
                         </div>
                     </div>
-                )}
+                    )}
             </div>
         </div>
     );
