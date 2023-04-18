@@ -4,6 +4,7 @@ import { Avatar, Button, DatePicker, Form, Input, Select } from 'antd'
 import { PlusOutlined, UserOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { buyerAddAddressThunk, buyerDeleteAddressThunk, buyerUpdateAddressThunk, buyerUpdateProfileThunk } from "../../services/buyer-thunks";
 import { ToastContainer, toast } from "react-toastify";
+import { sellerUpdateProfileThunk } from "../../services/seller-thunks";
 
 
 const Profile = () => {
@@ -76,7 +77,11 @@ const Profile = () => {
     // UPDATE
     const handleEditProfileFinish = async (values) => {
         console.log("Profile Edit Attempt: ", values)
-        dispatch(buyerUpdateProfileThunk({ username: profile.username, newProfile: values }))
+        if (type === 'buyer') {
+            dispatch(buyerUpdateProfileThunk({ username: profile.username, newProfile: values }))
+        } else if (type === 'seller') {
+            dispatch(sellerUpdateProfileThunk({ username: profile.username, newProfile: values }))
+        }
     }
     const handleEditProfileFinishFail = (errorInfo) => {
         console.log("Profile Edit Attempt Fail: ", errorInfo)
@@ -221,7 +226,7 @@ const Profile = () => {
             <div className="card bg-glass w-50 mb-5">
                 <h4 className="card-header bg-secondary bg-gradient text-white">Address</h4>
                 <div className="card-body">
-                    {profile[addressKey].map((addr, idx) =>
+                    {type === 'buyer' && profile['addresses'].map((addr, idx) =>
                         <div className="card card-body mt-3 mb-3" key={addr.id}>
                             <h6 style={{ textDecoration: 'underline' }}>Address {idx + 1}</h6>
 
@@ -273,53 +278,62 @@ const Profile = () => {
 
                         </div>
                     )}
+                    {type === 'seller' &&
+                        <>
+                            <div>{profile['business_address'].address1}, {profile['business_address'].address2}</div>
+                            <div>{profile['business_address'].city}</div>
+                            <div>{profile['business_address'].state} - {profile['business_address'].zipcode}</div>
+                        </>
+                    }
 
-                    {newAddressFlag ?
-                        (
-                            <div className="card card-body mt-3 mb-3">
-                                <h6 >Enter new address</h6>
-                                <Form layout="vertical" onFinish={handleNewAddressFinish} onFinishFailed={handleNewAddressFinishFail}>
-                                    <Form.Item label="In Care Of" name="incareof" rules={[{ required: true, message: 'Cannot be empty' }]}>
-                                        <Input placeholder="John Doe" />
-                                    </Form.Item>
-                                    <Form.Item label="Address Line 1" name="address1" rules={[{ required: true, message: 'Cannot be empty!' }]}>
-                                        <Input placeholder="102 Boylston St" showCount />
-                                    </Form.Item>
-                                    <Form.Item label="Address Line 2" name="address2" rules={[{ required: false }]}>
-                                        <Input placeholder="Apt 07" showCount />
-                                    </Form.Item>
-                                    <Form.Item label="City" name="city" rules={[{ required: true, message: 'Enter city name!' }]}>
-                                        <Input placeholder="Boston" />
-                                    </Form.Item>
-                                    <Form.Item label="State" name="state" rules={[{ required: true, message: 'Enter state name!' }]}>
-                                        <Input placeholder="MA" />
-                                    </Form.Item>
-                                    <Form.Item label="Zipcode" name="zipcode" rules={[{ required: true, message: 'Enter zipcode!' }, { len: 5, message: 'Must contain 5 digits!' }]}>
-                                        <Input placeholder="02215" type="number" />
-                                    </Form.Item>
+                    {type === 'buyer' ?
+                        newAddressFlag ?
+                            (
+                                <div className="card card-body mt-3 mb-3">
+                                    <h6 >Enter new address</h6>
+                                    <Form layout="vertical" onFinish={handleNewAddressFinish} onFinishFailed={handleNewAddressFinishFail}>
+                                        <Form.Item label="In Care Of" name="incareof" rules={[{ required: true, message: 'Cannot be empty' }]}>
+                                            <Input placeholder="John Doe" />
+                                        </Form.Item>
+                                        <Form.Item label="Address Line 1" name="address1" rules={[{ required: true, message: 'Cannot be empty!' }]}>
+                                            <Input placeholder="102 Boylston St" showCount />
+                                        </Form.Item>
+                                        <Form.Item label="Address Line 2" name="address2" rules={[{ required: false }]}>
+                                            <Input placeholder="Apt 07" showCount />
+                                        </Form.Item>
+                                        <Form.Item label="City" name="city" rules={[{ required: true, message: 'Enter city name!' }]}>
+                                            <Input placeholder="Boston" />
+                                        </Form.Item>
+                                        <Form.Item label="State" name="state" rules={[{ required: true, message: 'Enter state name!' }]}>
+                                            <Input placeholder="MA" />
+                                        </Form.Item>
+                                        <Form.Item label="Zipcode" name="zipcode" rules={[{ required: true, message: 'Enter zipcode!' }, { len: 5, message: 'Must contain 5 digits!' }]}>
+                                            <Input placeholder="02215" type="number" />
+                                        </Form.Item>
 
-                                    <Form.Item>
-                                        <div className="d-flex flex-row">
-                                            <Button shape="round" htmlType="submit" className="bg-dark text-white d-flex align-items-center me-2" >
-                                                Save
-                                            </Button>
-                                            <Button danger shape="round" className="d-flex align-items-center" onClick={() => setNewAddressFlag(false)}>
-                                                Cancel
-                                            </Button>
-                                        </div>
+                                        <Form.Item>
+                                            <div className="d-flex flex-row">
+                                                <Button shape="round" htmlType="submit" className="bg-dark text-white d-flex align-items-center me-2" >
+                                                    Save
+                                                </Button>
+                                                <Button danger shape="round" className="d-flex align-items-center" onClick={() => setNewAddressFlag(false)}>
+                                                    Cancel
+                                                </Button>
+                                            </div>
 
-                                    </Form.Item>
-                                </Form>
-                            </div>
-                        ) : (
-                            <Button type="primary" shape="round"
-                                className="bg-dark d-flex align-items-center"
-                                icon={<PlusOutlined />}
-                                onClick={() => setNewAddressFlag(true)}
-                            >
-                                Add New
-                            </Button>
-                        )
+                                        </Form.Item>
+                                    </Form>
+                                </div>
+                            ) : (
+                                <Button type="primary" shape="round"
+                                    className="bg-dark d-flex align-items-center"
+                                    icon={<PlusOutlined />}
+                                    onClick={() => setNewAddressFlag(true)}
+                                >
+                                    Add New
+                                </Button>
+                            )
+                        : <></>
                     }
                 </div>
             </div>
