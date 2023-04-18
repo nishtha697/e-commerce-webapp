@@ -83,7 +83,7 @@ const NewProduct = () => {
     }
 
     const onFinishFailed = (errorInfo) => {
-        console.log('Login Attempt Failed:', errorInfo)
+        console.log('Product Creation Attempt Failed:', errorInfo)
         toast.error("Error/Missing product information!", {
             position: "bottom-right",
             autoClose: 1000,

@@ -5,7 +5,7 @@ const PRODUCTS_API = 'http://localhost:4000/api/products';
 
 export const getAllProductsThunk = createAsyncThunk('products/all',
     async () => {
-        const response = await axios.get(PRODUCTS_API);
+        const response = await axios.get(`${PRODUCTS_API}/all`);
         return response.data;
     })
 
@@ -44,8 +44,27 @@ export const updateProductThunk = createAsyncThunk('products/update',
     })
 
 
-export const getProductCategoriesThunk = createAsyncThunk('products/categories',
+export const getProductCategoriesThunk = createAsyncThunk('products/unique-categories',
     async () => {
-        const response = await axios.get(`${PRODUCTS_API}/categories`);
+        const response = await axios.get(`${PRODUCTS_API}/all-categories`);
         return response.data
+    })
+
+
+export const getProductSellersThunk = createAsyncThunk('products/unique-sellers',
+    async () => {
+        const response = await axios.get(`${PRODUCTS_API}/all-sellers`);
+        return response.data
+    })
+
+
+export const getProductFilteredThunk = createAsyncThunk('products/filtered',
+    async (filters, { rejectWithValue }) => {
+        try {
+            const response = await axios.post(`${PRODUCTS_API}/filtered`, filters);
+            return response.data;
+        } catch (err) {
+            return rejectWithValue(err.response.data);
+        }
+
     })

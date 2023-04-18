@@ -1,4 +1,4 @@
-import {createSlice} from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import {
     shoppingCartCreateThunk,
     shoppingCartDeleteProductThunk,
@@ -24,8 +24,7 @@ const shoppingCartSlice = createSlice(
                     state.error = null
                 },
             [shoppingCartFindThunk.fulfilled]:
-                (state, {payload}) => {
-                    console.log(payload)
+                (state, { payload }) => {
                     state.shoppingCart = payload
                     state.error = null
                 },
@@ -35,7 +34,7 @@ const shoppingCartSlice = createSlice(
                     state.error = action.error
                 },
             [shoppingCartDeleteThunk.fulfilled]:
-                (state, {payload}) => {
+                (state, { payload }) => {
                     state.error = null
                     state.shoppingCart = {}
                 },
@@ -44,40 +43,34 @@ const shoppingCartSlice = createSlice(
                     state.error = action.error
                 },
             [shoppingCartCreateThunk.pending]:
-                (state, {payload}) => {
+                (state, { payload }) => {
                     state.shoppingCart = {}
                 },
             [shoppingCartCreateThunk.fulfilled]:
-                (state, {payload}) => {
+                (state, { payload }) => {
                     state.shoppingCart.product = payload
                 },
             [shoppingCartCreateThunk.rejected]:
-                (state, {payload}) => {
+                (state, { payload }) => {
                     state.shoppingCart = {}
                 },
             [shoppingCartUpdateProductThunk.fulfilled]:
-                (state, {payload}) => {
+                (state, { payload }) => {
                     state.error = null
                     state.shoppingCart.products = state.shoppingCart.products.map(product => {
-                        debugger
                         if (product.productId === Number(payload.productId)) {
-                            return {...product, quantity: payload.quantity};
+                            return { ...product, quantity: payload.quantity };
                         } else {
                             return product;
                         }
                     });
-                    console.log(state.shoppingCart.products)
                 },
             [shoppingCartDeleteProductThunk.fulfilled]:
-                (state, {payload}) => {
-                    debugger
-                    console.log("Payload");
-                    console.log(payload)
+                (state, { payload }) => {
                     state.error = null
                     state.shoppingCart.products =
                         state.shoppingCart.products.filter(
                             product => product.productId !== Number(payload.deletedProductId));
-                    console.log(state.shoppingCart)
                 },
 
         }
