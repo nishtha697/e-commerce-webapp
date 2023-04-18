@@ -4,7 +4,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { Button, Divider, Input, Select, Space } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { shoppingCartFindThunk } from "../../services/cart-thunks";
-import { buyerUpdateThunk } from "../../services/buyer-thunks";
+import { buyerAddAddressThunk } from "../../services/buyer-thunks";
 import { getAllProductsThunk } from "../../services/products-thunks.js";
 import CartItem from "./CartItem";
 
@@ -62,6 +62,7 @@ const Cart = () => {
             const newAddress = incareof + "\n" + address1 + "\n" + (address2 !== undefined || address2 !== null ? address2 : "") + "\n" + city + ", " + state + ", United States, " + zipcode;
             setAddresses([...addresses, newAddress]);
             const address = {
+                id: Date.now(),
                 incareof: incareof,
                 address1: address1,
                 address2: address2,
@@ -76,7 +77,7 @@ const Cart = () => {
             setState('')
             setZip('')
             setTimeout(() => { inputRef.current?.focus() }, 0);
-            dispatch(buyerUpdateThunk({ username: profile.username, address: address }));
+            dispatch(buyerAddAddressThunk({ username: profile.username, address: address }));
         } else {
             toast.error("Please enter valid values in address!", {
                 position: "bottom-right",
