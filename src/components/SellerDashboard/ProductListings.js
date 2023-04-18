@@ -4,6 +4,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { getProductBySellerThunk } from "../../services/products-thunks.js";
 import { Button, Table, Tag } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import styled from 'styled-components'
+
+const CustomTable = styled(Table)`
+    table {
+        border: 1px solid coral;
+    }
+    th {
+        background-color: coral !important;
+        color: white !important;
+    }
+`;
 
 const ProductListings = () => {
 
@@ -11,7 +22,7 @@ const ProductListings = () => {
     const navigate = useNavigate();
 
     const { profile } = useSelector(state => state.user)
-    const { products, loading } = useSelector(state => state.productsData)
+    const { allProducts, loading } = useSelector(state => state.productsData)
 
     useEffect(() => {
         if (profile && profile.username) {
@@ -102,16 +113,16 @@ const ProductListings = () => {
                         <h3>Your Products</h3>
                         <Button type="primary" shape="round"
                             icon={<PlusOutlined />}
-                            style={{ width: "180px", display: "flex", alignItems: "center", alignSelf: "flex-end" }}
+                            style={{ width: "180px", display: "flex", alignItems: "center", alignSelf: "flex-end", background: "coral" }}
                             onClick={() => navigate('/seller/newlisting')}
                         >
                             Add New Listing
                         </Button>
                     </div>
 
-                    <Table
+                    <CustomTable
                         columns={columns}
-                        dataSource={products}
+                        dataSource={allProducts}
                         rowKey={(row) => row.product_id}
                     />
                 </div>
