@@ -1,18 +1,19 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import { Route, Routes } from "react-router";
+import { useSelector } from "react-redux";
+import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import Navbar from "./components/Navbar/Navbar";
 import Home from "./components/Home/Home.js";
 import Product from "./components/Home/Product.js";
-import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap-icons/font/bootstrap-icons.css';
 import Profile from "./components/Profile/Profile";
 import Dashboard from "./components/SellerDashboard/Dashboard";
 import ProductListings from "./components/SellerDashboard/ProductListings";
-import { useSelector } from "react-redux";
+import NewProduct from "./components/SellerDashboard/NewProduct";
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
                         {user.type === "buyer" && <Route path="/orders" element={<div>TODO BUYER ORDERS</div>} />}
                         {user.type === "seller" && <Route path="/seller/dashboard" element={<Dashboard />} />}
                         {user.type === "seller" && <Route path="/seller/productlistings" element={<ProductListings />} />}
+                        {user.type === "seller" && <Route path="/seller/newlisting" element={<NewProduct />} />}
                         {user.type === "seller" && <Route path="/seller/orders" element={<div>TODO SELLER ORDERS</div>} />}
                         {user.type !== "" && <Route path="/profile" element={<Profile />} />}
                         {user.type === "" && <Route path="/register" element={<Register />} />}

@@ -42,3 +42,10 @@ export const updateProductThunk = createAsyncThunk('products/update',
             return product;
         }
     })
+
+
+export const getProductCategoriesThunk = createAsyncThunk('products/categories',
+    async () => {
+        const response = await axios.get(`${PRODUCTS_API}/categories`);
+        return response.data
+    })

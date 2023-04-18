@@ -4,6 +4,7 @@ import {
     getAllProductsThunk,
     getProductByIdThunk,
     getProductBySellerThunk,
+    getProductCategoriesThunk,
     updateProductThunk
 } from "../services/products-thunks";
 
@@ -11,14 +12,26 @@ const initialState = {
     products: [],
     loading: false,
     error: null,
-    currentProduct: null
+    currentProduct: null,
+    categories: null,
+    newProductCreation: {
+        product: null,
+        complete: false,
+        error: false
+    }
 }
 
 const productsSlice = createSlice(
     {
         name: 'products',
         initialState,
-        reducers: {},
+        reducers: {
+            clearNewProductCreation: (state) => {
+                state.newProductCreation.complete = false
+                state.newProductCreation.error = false
+                state.newProductCreation.product = null
+            },
+        },
         extraReducers: {
             [getAllProductsThunk.pending]:
                 (state) => {
@@ -66,13 +79,32 @@ const productsSlice = createSlice(
                         state.currentProduct = payload
                     }
                 },
+            [getProductCategoriesThunk.fulfilled]:
+                (state, { payload }) => {
+                    state.categories = payload
+                },
+            [createProductThunk.pending]:
+                (state, { payload }) => {
+                    state.newProductCreation.product = null
+                    state.newProductCreation.complete = false
+                    state.newProductCreation.error = false
+                },
             [createProductThunk.fulfilled]:
                 (state, { payload }) => {
-                    state.loading = false
+                    state.newProductCreation.product = payload
+                    state.newProductCreation.complete = true
+                    state.newProductCreation.error = false
                     state.products.push(payload)
+                },
+            [createProductThunk.rejected]:
+                (state, { payload }) => {
+                    state.newProductCreation.product = null
+                    state.newProductCreation.complete = true
+                    state.newProductCreation.error = true
                 }
 
         }
     });
 
 export default productsSlice.reducer;
+export const { clearNewProductCreation } = productsSlice.actions;

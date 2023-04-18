@@ -20,7 +20,7 @@ const Navbar = () => {
 
     const navLinks = [
         { title: "Home", path: "/", show: ["anon", "buyer"] },
-        { title: "Cart", path: "/cart", show: ["anon", "buyer"] },
+        { title: "Cart", path: "/cart", show: ["buyer"] },
         { title: "Login/Register", path: "/login", show: ["anon"] },
         { title: "My Orders", path: "/orders", show: ["buyer"] },
         { title: "Dashboard", path: "/seller/dashboard", show: ["seller"] },

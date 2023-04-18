@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { getProductBySellerThunk } from "../../services/products-thunks.js";
-import { Table, Tag } from 'antd';
-import { Link } from "react-router-dom";
+import { Button, Table, Tag } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 
 const ProductListings = () => {
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const { profile } = useSelector(state => state.user)
     const { products, loading } = useSelector(state => state.productsData)
@@ -24,9 +26,10 @@ const ProductListings = () => {
             key: 'product_image',
             width: "7.5%",
             ellipsis: true,
-            render: (_, { product_image }) => (
+            render: (_, { product_image }) => (product_image ?
                 <img src={product_image} style={{ width: "auto", height: "100%", maxWidth: "100%" }} />
-            ),
+                : <span> No Image </span>)
+            ,
         },
         {
             title: 'Id',
@@ -67,7 +70,7 @@ const ProductListings = () => {
             ellipsis: true,
             align: 'center',
             sorter: (a, b) => a.inventory - b.inventory,
-            render: (inventory, record) => (<div>{record.unavailable ? "Not Available": inventory}</div>),
+            render: (inventory, record) => (<div>{record.unavailable ? "Not Available" : inventory}</div>),
         },
         {
             title: '# Orders',
@@ -85,7 +88,7 @@ const ProductListings = () => {
             width: "25%",
             render: (_, { category }) => (
                 <>
-                    {category.map((tag, idx) => <Tag color="green" key={idx}> {tag.toUpperCase()} </Tag>)}
+                    {category.filter(c => c !== 'Other').map((tag, idx) => <Tag color="green" key={idx}> {tag.toUpperCase()} </Tag>)}
                 </>
             ),
         },
@@ -93,12 +96,26 @@ const ProductListings = () => {
 
     return (
         <div>
-            {loading ? <li className="list-group-item"> Loading... </li> :
-                <Table
-                    columns={columns}
-                    dataSource={products}
-                    rowKey={(row) => row.product_id}
-                />}
+            {loading ? <li className="list-group-item"> Loading... </li>
+                : <div className="d-flex flex-column">
+                    <div className="mb-3" style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                        <h3>Your Products</h3>
+                        <Button type="primary" shape="round"
+                            icon={<PlusOutlined />}
+                            style={{ width: "180px", display: "flex", alignItems: "center", alignSelf: "flex-end" }}
+                            onClick={() => navigate('/seller/newlisting')}
+                        >
+                            Add New Listing
+                        </Button>
+                    </div>
+
+                    <Table
+                        columns={columns}
+                        dataSource={products}
+                        rowKey={(row) => row.product_id}
+                    />
+                </div>
+            }
         </div>
     );
 }

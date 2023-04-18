@@ -238,14 +238,7 @@ const Register = () => {
                                                         { len: 10, message: 'Must contain 10 digits!' },
                                                     ]}
                                                 >
-                                                    <Input
-                                                        style={{ width: '100%' }}
-                                                        addonBefore={
-                                                            <Select style={{ width: 80 }}>
-                                                                <Select.Option>{"(+1)"}</Select.Option>
-                                                            </Select>
-                                                        }
-                                                    />
+                                                    <Input addonBefore="+1" style={{ width: '100%' }} />
                                                 </Form.Item>
                                             </div>
                                             {/* Street */}

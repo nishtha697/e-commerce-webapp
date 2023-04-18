@@ -65,27 +65,31 @@ const Product = () => {
 
                 {/* Product Tags & Seller */}
                 <div className="mb-3">
-                    {product.category && product.category.map(c =>
-                        <span key={c}
-                            style={{ background: "coral" }}
-                            className="badge badge-pill badge-warning me-3 mb-2"
-                        >
-                            {c}
-                        </span>
-                    )}
+                    {product.category && product.category
+                        .filter(c => c !== 'Other')
+                        .map(c =>
+                            <span key={c}
+                                style={{ background: "coral" }}
+                                className="badge badge-pill badge-warning me-3 mb-2"
+                            >
+                                {c}
+                            </span>
+                        )}
                     {isLoggedIn() && type === "buyer" && <p className="card-text text-muted">Sold by {product.seller}</p>}
                 </div>
 
 
                 {/* Image */}
-                <div className="mb-3">
-                    <img
-                        src={product.product_image}
-                        style={{ width: "auto", height: "300px" }}
-                        className="card-img-top mt-2 mb-1"
-                        alt={product.title}
-                    />
-                </div>
+                {product.product_image &&
+                    <div className="mb-3">
+                        <img
+                            src={product.product_image}
+                            style={{ width: "auto", height: "300px" }}
+                            className="card-img-top mt-2 mb-1"
+                            alt={product.title}
+                        />
+                    </div>
+                }
 
                 {/* Description */}
                 <div className="mb-3">
