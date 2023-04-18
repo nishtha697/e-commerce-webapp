@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { buyerLoginThunk } from "../services/buyer-thunks.js";
+import {buyerLoginThunk, buyerUpdateThunk} from "../services/buyer-thunks.js";
 import { sellerLoginThunk } from "../services/seller-thunks.js";
 
 const initialState = {
@@ -39,6 +39,10 @@ const userSlice = createSlice(
                     state.profile = null;
                     state.type = null;
                     state.error = payload.error;
+                },
+            [buyerUpdateThunk.fulfilled]:
+                (state, { payload }) => {
+                    state.profile.addresses.push(payload.address);
                 },
             [sellerLoginThunk.fulfilled]:
                 (state, { payload }) => {

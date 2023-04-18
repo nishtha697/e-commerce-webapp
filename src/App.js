@@ -14,6 +14,7 @@ import Profile from "./components/Profile/Profile";
 import Dashboard from "./components/SellerDashboard/Dashboard";
 import ProductListings from "./components/SellerDashboard/ProductListings";
 import NewProduct from "./components/SellerDashboard/NewProduct";
+import Cart from "./components/Cart/Cart";
 
 
 function App() {
@@ -27,7 +28,7 @@ function App() {
                     <Routes>
                         <Route path="/products/:id" element={<Product />} />
                         {user.type !== "seller" && <Route index element={<Home />} />}
-                        {user.type === "buyer" && <Route path="/cart" element={<div>TODO BUYER CART</div>} />}
+                        {user.type === "buyer" && <Route path="/cart" element={<Cart />} />}
                         {user.type === "buyer" && <Route path="/orders" element={<div>TODO BUYER ORDERS</div>} />}
                         {user.type === "seller" && <Route path="/seller/dashboard" element={<Dashboard />} />}
                         {user.type === "seller" && <Route path="/seller/productlistings" element={<ProductListings />} />}

@@ -22,13 +22,11 @@ export const buyerLoginThunk = createAsyncThunk('buyer/login',
         } catch (err) {
             return rejectWithValue(err.response.data);
         }
-
-
     })
 
 
-// export const buyerUpdateThunk = createAsyncThunk('buyer/update',
-//     async (buyer) => {
-//         await axios.put(`${BUYER_API}/${buyer.buyer_id}`, buyer);
-//         return buyer;
-//     })
+export const buyerUpdateThunk = createAsyncThunk('buyer/addAddress',
+    async ({ username, address }) => {
+        const response = await axios.put(`${BUYER_API}/${username}`, { address });
+        return response.data;
+    })

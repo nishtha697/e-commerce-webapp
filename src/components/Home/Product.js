@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { To, useParams } from "react-router";
 import { getProductByIdThunk, updateProductThunk } from "../../services/products-thunks";
 import { useDispatch, useSelector } from "react-redux";
 import { Input, InputNumber } from "antd";
+import { shoppingCartAddProductThunk } from "../../services/cart-thunks";
+import { toast, ToastContainer } from "react-toastify";
 
 // Reload the product using api call to have up to date inventory
 const Product = () => {
@@ -31,6 +33,26 @@ const Product = () => {
         dispatch(updateProductThunk(p))
     }
 
+    const handleAddToCart = () => {
+        dispatch(shoppingCartAddProductThunk(
+            {
+                username: profile.username,
+                product: {
+                    productId: product.product_id,
+                    quantity: quantity
+                }
+            }))
+        toast.success("Product successfully added to Shopping cart!", {
+            position: "bottom-right",
+            autoClose: 1000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "colored",
+        });
+    }
 
     const handleUnavailable = async () => {
         let newProduct = { ...product };
@@ -58,7 +80,8 @@ const Product = () => {
                 {isSellerEdit ?
                     <div className="mb-3">
                         <h5>Title</h5>
-                        <Input.TextArea size="large" showCount value={product.title} onChange={(e) => handleSellerEdit("title", e.target.value)} />
+                        <Input.TextArea size="large" showCount value={product.title}
+                            onChange={(e) => handleSellerEdit("title", e.target.value)} />
                     </div>
                     : <h4 className="card-title mb-2">{product.title}</h4>
                 }
@@ -75,7 +98,8 @@ const Product = () => {
                                 {c}
                             </span>
                         )}
-                    {isLoggedIn() && type === "buyer" && <p className="card-text text-muted">Sold by {product.seller}</p>}
+                    {isLoggedIn() && type === "buyer" && <p className="card-text text-muted">Sold
+                        by {product.seller}</p>}
                 </div>
 
 
@@ -95,7 +119,9 @@ const Product = () => {
                 <div className="mb-3">
                     <h5>Description</h5>
                     {isSellerEdit ?
-                        <Input.TextArea size="large" row={10} showCount value={product.description} onChange={(e) => handleSellerEdit("description", e.target.value)} />
+                        <Input.TextArea size="large" row={10} showCount value={product.description}
+                            onChange={(e) => handleSellerEdit("description",
+                                e.target.value)} />
                         : <p className="card-text">{product.description}</p>
                     }
                 </div>
@@ -104,7 +130,9 @@ const Product = () => {
                 <div className="mb-3">
                     <h5>Highlights</h5>
                     {isSellerEdit ?
-                        <Input.TextArea size="large" row={10} showCount value={product.highlights} onChange={(e) => handleSellerEdit("highlights", e.target.value)} />
+                        <Input.TextArea size="large" row={10} showCount value={product.highlights}
+                            onChange={(e) => handleSellerEdit("highlights",
+                                e.target.value)} />
                         : <p className="card-text">{product.highlights}</p>
                     }
                 </div>
@@ -113,7 +141,8 @@ const Product = () => {
                 <div className="mb-3">
                     <h5>Price</h5>
                     {isSellerEdit ?
-                        <InputNumber size="large" value={product.price} onChange={(e) => handleSellerEdit("price", Number(e))} />
+                        <InputNumber size="large" value={product.price}
+                            onChange={(e) => handleSellerEdit("price", Number(e))} />
                         : <p className="card-text text-muted">${product.price}</p>
                     }
                 </div>
@@ -131,22 +160,28 @@ const Product = () => {
                         value={quantity}
                         onChange={(e) => setQuantity(e.target.value)}
                     />
-                    <button className="btn btn-outline-success" style={{ display: "inline" }} disabled={!isLoggedIn()}>
+                    <button className="btn btn-outline-success" style={{ display: "inline" }}
+                        disabled={!isLoggedIn()} onClick={handleAddToCart}>
                         Add to Cart
                     </button>
-                    {!isLoggedIn() && <div><i style={{ color: "red" }}>Login to add product to cart</i></div>}
+                    {!isLoggedIn() && <div><i style={{ color: "red" }}>Login to add product to
+                        cart</i></div>}
                 </div>}
 
                 {/* Total Price */}
-                {type !== "seller" && <p className="card-text">Total Price: <b>${(quantity * product.price).toFixed(2)}</b></p>}
+                {type !== "seller" && <p className="card-text">Total Price: <b>${(quantity
+                    * product.price).toFixed(
+                        2)}</b></p>}
 
                 {/* Stock Level */}
                 {type === "seller" &&
                     <div className="mb-3">
                         <h5>Inventory Level</h5>
                         {isSellerEdit ?
-                            <InputNumber size="large" value={product.inventory} onChange={(e) => handleSellerEdit("inventory", Number(e))} />
-                            : <p className="card-text text-muted">{product.inventory} qty</p>
+                            <InputNumber size="large" value={product.inventory}
+                                onChange={(e) => handleSellerEdit("inventory", Number(e))} />
+                            : <p
+                                className="card-text text-muted">{product.inventory} qty</p>
                         }
                     </div>
                 }
@@ -170,16 +205,17 @@ const Product = () => {
                         className="btn btn-outline-danger me-2 mb-3"
                         onClick={handleUnavailable}
                     >
-                        {product.hasOwnProperty("unavailable") && product.unavailable === true ? "Mark as Available" : "Mark as Unavailable"}
+                        {product.hasOwnProperty("unavailable") && product.unavailable === true
+                            ? "Mark as Available" : "Mark as Unavailable"}
                     </button>
                 }
 
             </div>
         }
+        <ToastContainer />
     </div>
     )
 
 }
-
 
 export default Product;

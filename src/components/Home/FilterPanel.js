@@ -1,4 +1,4 @@
-import { Form, Button, Input, InputNumber, Select, Slider, Descriptions } from "antd";
+import { Form, Button, Input, Select, Slider } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearAppliedFilters, updateAppliedFilters } from "../../reducers/products-reducer";
@@ -98,7 +98,7 @@ const FilterPanel = () => {
                             allowClear
                         >
                             {filters.categories && Object.keys(filters.categories).map(category =>
-                                <Select.Option value={category}>{category}</Select.Option>
+                                <Select.Option value={category} key={category}>{category}</Select.Option>
                             )}
                         </Select>
                     </Form.Item>
@@ -113,7 +113,7 @@ const FilterPanel = () => {
                                 && Object.keys(filters.categories[newFilters.category.category1])
                                     .filter(c => c !== 'Other')
                                     .map(category =>
-                                        <Select.Option value={category}>{category}</Select.Option>
+                                        <Select.Option value={category} key={category}>{category}</Select.Option>
                                     )}
                         </Select>
                     </Form.Item>
@@ -130,7 +130,7 @@ const FilterPanel = () => {
                                 && filters.categories[newFilters.category.category1][newFilters.category.category2]
                                     .filter(c => c !== 'Other')
                                     .map(category =>
-                                        <Select.Option value={category}>{category}</Select.Option>
+                                        <Select.Option value={category} key={category}>{category}</Select.Option>
                                     )}
                         </Select>
                     </Form.Item>

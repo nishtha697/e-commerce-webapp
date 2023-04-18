@@ -38,7 +38,7 @@ const ProductListings = () => {
             width: "7.5%",
             ellipsis: true,
             render: (_, { product_image }) => (product_image ?
-                <img src={product_image} style={{ width: "auto", height: "100%", maxWidth: "100%" }} />
+                <img src={product_image} style={{ width: "auto", height: "100%", maxWidth: "100%" }} alt="" />
                 : <span> No Image </span>)
             ,
         },

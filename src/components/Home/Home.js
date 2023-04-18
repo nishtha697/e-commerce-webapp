@@ -21,12 +21,10 @@ const Home = () => {
     return (
         <div>
             {loading && <li className="list-group-item"> Loading... </li>}
-
             <div className="row d-flex flex-row mt-2 mb-2">
-                <div class="col-md-2">
+                <div className="col-md-2">
                     <FilterPanel />
                 </div>
-
                 <div className="col-md-10 row mx-auto align-items-stretch">
                     <div className="mb-2 text-muted">Total Products: {productsToShow.length}</div>
 
@@ -35,11 +33,11 @@ const Home = () => {
                             {Object.keys(appliedFilters)
                                 .filter(key => appliedFilters[key])
                                 .map(key => key !== 'category' ?
-                                    <Tag color="coral" > {key}: {appliedFilters[key]} </Tag>
+                                    <Tag color="coral" key={key}> {key}: {appliedFilters[key]} </Tag>
                                     : <>
                                         {Object.keys(appliedFilters[key])
                                             .filter(category => appliedFilters[key][category])
-                                            .map(category => <Tag color="coral" > category: {appliedFilters[key][category]} </Tag>)}
+                                            .map(category => <Tag color="coral" key={category} > category: {appliedFilters[key][category]} </Tag>)}
                                     </>
 
                                 )}
@@ -68,11 +66,7 @@ const Home = () => {
                         </div>
                         )}
                 </div>
-
             </div>
-
-
-
         </div>
     );
 }
