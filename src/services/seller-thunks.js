@@ -22,8 +22,12 @@ export const sellerLoginThunk = createAsyncThunk('seller/login',
     })
 
 
-// export const sellerUpdateThunk = createAsyncThunk('seller/update',
-//     async (seller) => {
-//         await axios.put(`${SELLER_API}/${seller.seller_id}`, seller);
-//         return seller;
-//     })
+export const sellerUpdateProfileThunk = createAsyncThunk('seller/updateProfile',
+    async ({ username, newProfile }, { rejectWithValue }) => {
+        try {
+            const response = await axios.put(`${SELLER_API}/update-profile/${username}`, { newProfile });
+            return response.data;
+        } catch (err) {
+            return rejectWithValue(err.response.data);
+        }
+    })

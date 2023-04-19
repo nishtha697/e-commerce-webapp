@@ -25,8 +25,47 @@ export const buyerLoginThunk = createAsyncThunk('buyer/login',
     })
 
 
-export const buyerUpdateThunk = createAsyncThunk('buyer/addAddress',
-    async ({ username, address }) => {
-        const response = await axios.put(`${BUYER_API}/${username}`, { address });
-        return response.data;
+export const buyerAddAddressThunk = createAsyncThunk('buyer/addAddress',
+    async ({ username, address }, { rejectWithValue }) => {
+        try {
+            const addressId = Date.now()
+            address['id'] = addressId
+            const response = await axios.put(`${BUYER_API}/add-address/${username}`, { address });
+            return response.data;
+        } catch (err) {
+            return rejectWithValue(err.response.data);
+        }
     })
+
+
+export const buyerDeleteAddressThunk = createAsyncThunk('buyer/deleteAddress',
+    async ({ username, addressId }, { rejectWithValue }) => {
+        try {
+            const response = await axios.put(`${BUYER_API}/delete-address/${username}`, { addressId });
+            return response.data;
+        } catch (err) {
+            return rejectWithValue(err.response.data);
+        }
+    })
+
+
+export const buyerUpdateAddressThunk = createAsyncThunk('buyer/updateAddress',
+    async ({ username, address }, { rejectWithValue }) => {
+        try {
+            const response = await axios.put(`${BUYER_API}/update-address/${username}`, { address });
+            return response.data;
+        } catch (err) {
+            return rejectWithValue(err.response.data);
+        }
+    })
+
+
+export const buyerUpdateProfileThunk = createAsyncThunk('buyer/updateProfile',
+async ({ username, newProfile }, { rejectWithValue }) => {
+    try {
+        const response = await axios.put(`${BUYER_API}/update-profile/${username}`, { newProfile });
+        return response.data;
+    } catch (err) {
+        return rejectWithValue(err.response.data);
+    }
+})

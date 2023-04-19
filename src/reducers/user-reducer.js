@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {buyerLoginThunk, buyerUpdateThunk} from "../services/buyer-thunks.js";
-import { sellerLoginThunk } from "../services/seller-thunks.js";
+import { buyerLoginThunk, buyerAddAddressThunk, buyerDeleteAddressThunk, buyerUpdateAddressThunk, buyerUpdateProfileThunk } from "../services/buyer-thunks.js";
+import { sellerLoginThunk, sellerUpdateProfileThunk } from "../services/seller-thunks.js";
 
 const initialState = {
     lastAttempt: null,
@@ -27,7 +27,7 @@ const userSlice = createSlice(
         },
         extraReducers: {
             [buyerLoginThunk.fulfilled]:
-                (state, { payload }) => {;
+                (state, { payload }) => {
                     state.lastAttempt = Date.now();
                     state.profile = payload;
                     state.type = 'buyer';
@@ -40,9 +40,28 @@ const userSlice = createSlice(
                     state.type = null;
                     state.error = payload.error;
                 },
-            [buyerUpdateThunk.fulfilled]:
+
+            [buyerAddAddressThunk.fulfilled]:
                 (state, { payload }) => {
                     state.profile.addresses.push(payload.address);
+                },
+            [buyerDeleteAddressThunk.fulfilled]:
+                (state, { payload }) => {
+                    state.profile.addresses = state.profile.addresses.filter(addr => addr.id !== payload.addressId);
+                },
+            [buyerUpdateAddressThunk.fulfilled]:
+                (state, { payload }) => {
+                    const newAddresses = state.profile.addresses.map(addr => {
+                        if (addr.id === payload.address.id) {
+                            return payload.address
+                        }
+                        return addr
+                    })
+                    state.profile.addresses = newAddresses
+                },
+            [buyerUpdateProfileThunk.fulfilled]:
+                (state, { payload }) => {
+                    state.profile = payload.newProfile;
                 },
             [sellerLoginThunk.fulfilled]:
                 (state, { payload }) => {
@@ -57,6 +76,10 @@ const userSlice = createSlice(
                     state.profile = null;
                     state.type = null;
                     state.error = payload.error;
+                },
+            [sellerUpdateProfileThunk.fulfilled]:
+                (state, { payload }) => {
+                    state.profile = payload.newProfile;
                 },
         },
 
