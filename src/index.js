@@ -10,6 +10,7 @@ import { logger } from "redux-logger";
 import shoppingCartReducer from "./reducers/cart-reducers";
 import productsReducer from "./reducers/products-reducer.js";
 import userReducer from "./reducers/user-reducer.js";
+import ordersReducer from "./reducers/orders-reducers.js";
 import storage from "redux-persist/lib/storage";
 import persistReducer from 'redux-persist/es/persistReducer';
 import persistStore from 'redux-persist/es/persistStore';
@@ -25,7 +26,8 @@ const store = configureStore(
         reducer: persistReducer(persistConfig, combineReducers({
             productsData: productsReducer,
             user: userReducer,
-            shoppingCartData: shoppingCartReducer
+            shoppingCartData: shoppingCartReducer,
+            ordersData: ordersReducer
         })),
         middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false })
             .concat(logger)

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { To, useParams } from "react-router";
 import { getProductByIdThunk, updateProductThunk } from "../../services/products-thunks";
 import { useDispatch, useSelector } from "react-redux";
 import { Input, InputNumber } from "antd";

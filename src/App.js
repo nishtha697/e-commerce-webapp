@@ -17,6 +17,7 @@ import NewProduct from "./components/SellerDashboard/NewProduct";
 import Cart from "./components/Cart/Cart";
 import ShipmentTracking from "./components/SellerDashboard/ShipmentTracking";
 import Order from "./components/OrderShipments/Order";
+import ReceivedShipments from "./components/OrderShipments/ReceivedShipments";
 
 function App() {
 
@@ -32,10 +33,9 @@ function App() {
                         {user.type !== "seller" && <Route index element={<Home />} />}
                         {user.type === "buyer" && <Route path="/cart" element={<Cart />} />}
                         {user.type === "buyer" && <Route path="/orders" element={<Order />} />}
-                        {user.type === "seller" && <Route path="/seller/dashboard" element={<Dashboard />} />}
                         {user.type === "seller" && <Route path="/seller/productlistings" element={<ProductListings />} />}
                         {user.type === "seller" && <Route path="/seller/newlisting" element={<NewProduct />} />}
-                        {user.type === "seller" && <Route path="/seller/orders" element={<ShipmentTracking />} />}
+                        {user.type === "seller" && <Route path="/seller/orders" element={<ReceivedShipments />} />}
                         {['buyer', 'seller'].includes(user.type) && <Route path="/profile" element={<Profile />} />}
                         <Route path="/register" element={<Register />} />
                         <Route path="/login" element={<Login />} />

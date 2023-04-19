@@ -45,7 +45,7 @@ const Login = () => {
                 theme: "colored",
             });
             if (type === 'buyer') navigate('/');
-            else navigate('/seller/dashboard')
+            else navigate('/seller/productlistings')
         }
     }, [lastAttempt])
 

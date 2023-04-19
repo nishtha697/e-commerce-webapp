@@ -7,6 +7,7 @@ import { shoppingCartDeleteThunk, shoppingCartFindThunk } from "../../services/c
 import { buyerAddAddressThunk } from "../../services/buyer-thunks";
 import { getAllProductsThunk } from "../../services/products-thunks.js";
 import CartItem from "./CartItem";
+import { createOrderThunk } from "../../services/orders-thunks";
 
 const Cart = () => {
     const dispatch = useDispatch();
@@ -17,13 +18,24 @@ const Cart = () => {
     const [totalPrice, setTotalPrice] = useState(0);
     const inputRef = useRef(null);
 
+    // const initialAddresses = profile.addresses && profile.addresses.map(address => {
+    //     if (address != null) {
+    //         return address.incareof + "\n" + address.address1 + "\n" +
+    //             (address.address2 !== undefined || address.address2 !== null ? address.address2 : "")
+    //             + "\n" + address.city + ", " + address.state + ", United States, " + address.zipcode
+    //     }
+    // })
+
     const initialAddresses = profile.addresses && profile.addresses.map(address => {
         if (address != null) {
-            return address.incareof + "\n" + address.address1 + "\n" +
-                (address.address2 !== undefined || address.address2 !== null ? address.address2 : "")
-                + "\n" + address.city + ", " + address.state + ", United States, " + address.zipcode
+            return {
+                id: address.id,
+                address: address.incareof + "\n" + address.address1 + "\n" +
+                    (address.address2 !== undefined || address.address2 !== null ? address.address2 : "")
+                    + "\n" + address.city + ", " + address.state + ", United States, " + address.zipcode
+            };
         }
-    })
+    });
 
     const [incareof, setInCareOf] = useState('');
     const onInCareOfChange = (event) => {
@@ -50,18 +62,28 @@ const Cart = () => {
         setZip(event.target.value)
     }
     const [addresses, setAddresses] = useState(initialAddresses);
-    const [selectedAddress, setSelectedAddresses] = useState(addresses[0]);
+    const [selectedAddress, setSelectedAddresses] = useState(addresses[0].address);
+    const [selectedAddressId, setSelectedAddressId] = useState(addresses[0].id);
 
-    const handleAddressValueChange = (event) => {
-        setSelectedAddresses(event)
+    const handleAddressValueChange = (value, option) => {
+        const { value: selectedId, label: selectedAddress } = option;
+        setSelectedAddresses(selectedAddress)
+        setSelectedAddressId(selectedId);
     }
 
     const addItem = (e) => {
         e.preventDefault();
         if (incareof !== '' && address1 !== '' && city !== '' && state !== '' & city !== '' && zipcode !== '') {
-            const newAddress = incareof + "\n" + address1 + "\n" + (address2 !== undefined || address2 !== null ? address2 : "") + "\n" + city + ", " + state + ", United States, " + zipcode;
+            const newAddressId = (new Date()).getTime()
+            const newAddress = {
+                id: newAddressId,
+                address: incareof + "\n" + address1 + "\n" +
+                    (address2 !== undefined || address2 !== null ? address2 : "") + "\n" +
+                    city + ", " + state + ", United States, " + zipcode
+            };
             setAddresses([...addresses, newAddress]);
             const address = {
+                id: newAddressId,
                 incareof: incareof,
                 address1: address1,
                 address2: address2,
@@ -115,8 +137,69 @@ const Cart = () => {
         }
     }, [shoppingCart, allProducts]);
 
+    const createShipments = (products) => {
+        const shipments = [];
+        // group products by seller
+        const productsBySeller = products.reduce((acc, product) => {
+            if (acc[product.seller]) {
+                const { seller, ...shipmentProduct } = product
+                acc[product.seller].push(shipmentProduct);
+            } else {
+                const { seller, ...shipmentProduct } = product
+                acc[product.seller] = [shipmentProduct];
+            }
+            return acc;
+        }, {});
+
+        // create a shipment for each seller
+        let shipmentId = 1;
+        for (const seller in productsBySeller) {
+            const products = productsBySeller[seller];
+            const shipment = {
+                shipmentId: shipmentId++,
+                seller_username: seller,
+                products,
+                shipmentStatusLog: [{
+                    status: "Placed",
+                    date: Date.now()
+                }]
+            };
+            shipments.push(shipment);
+        }
+        return shipments;
+    };
+
     const handleCheckout = () => {
-        // TODO
+
+        const filteredProducts = allProducts.filter((product) => {
+            const matchingProduct = shoppingCart.products.find((item) => item.productId === product.product_id);
+            return !!matchingProduct;
+        }).map((product) => {
+            const matchingProduct = shoppingCart.products.find((item) => item.productId === product.product_id);
+            const { productId, quantity } = matchingProduct;
+            const { price, seller } = product;
+            return { product_id: productId, quantity, pricePerUnit: price, seller };
+        });
+        const shipments = createShipments(filteredProducts);
+        const order = {
+            "buyer_username": profile.username,
+            "shippingAddress": profile.addresses.find(address => address.id === selectedAddressId),
+            "totalPrice": totalPrice,
+            "paymentMethod": "Cash on Delievery",
+            "shipments": shipments
+        }
+        dispatch(createOrderThunk(order))
+        dispatch(shoppingCartDeleteThunk(profile.username))
+        toast.success('Order placed! :)', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+        });
     }
 
     const cartFull = shoppingCart && shoppingCart.products && shoppingCart.products.length > 0
@@ -196,7 +279,7 @@ const Cart = () => {
                                     </Space>
                                 </>
                             )}
-                            options={addresses.map((address) => ({ label: address, value: address }))}
+                            options={addresses.map((address) => ({ label: address.address, value: address.id }))}
                         />
                     </div>
                     <div className="mt-3 mb-3 mb-1 col-2">Payment Method: <br /><b>Cash on Delivery</b></div>
