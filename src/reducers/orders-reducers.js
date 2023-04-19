@@ -71,7 +71,6 @@ const orderSlice = createSlice({
         [cancelAllShipmentsThunk.fulfilled]:
             (state, { payload }) => {
                 state.error = null;
-                const orderIndex = state.orders.findIndex((order) => order.order_id === payload.order_id);
                 state.orders = state.orders.map(order => {
                     if (order.order_id === payload.result.order_id) return payload.result
                     else return order

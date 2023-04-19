@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { Tag } from "antd";
 import { getAllProductsThunk, getProductCategoriesThunk } from "../../services/products-thunks.js";
 import FilterPanel from "./FilterPanel.js";
-import { Tag } from "antd";
 
 const Home = () => {
 

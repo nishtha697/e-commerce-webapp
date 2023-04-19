@@ -3,17 +3,6 @@ import { createAsyncThunk } from "@reduxjs/toolkit"
 
 const SHOPPING_CART_API = 'http://localhost:4000/api/shopping-cart';
 
-export const shoppingCartCreateThunk = createAsyncThunk('shopping-cart/create',
-    async (shoppingCart, { rejectWithValue }) => {
-        try {
-            const response = await axios.post(SHOPPING_CART_API, shoppingCart);
-            return response.data;
-        } catch (err) {
-            return rejectWithValue(err.response.data);
-        }
-
-    })
-
 export const shoppingCartDeleteThunk = createAsyncThunk('shopping-cart/delete',
     async (username, { rejectWithValue }) => {
         try {

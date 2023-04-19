@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { buyerRegisterThunk } from "../../services/buyer-thunks";
 import { ToastContainer, toast } from 'react-toastify';
+import { Button, Checkbox, DatePicker, Form, Input, Radio, Select } from "antd";
+import { buyerRegisterThunk } from "../../services/buyer-thunks";
+import { sellerRegisterThunk } from "../../services/seller-thunks";
 import 'react-toastify/dist/ReactToastify.css';
 import './Register.css';
-import { Button, Checkbox, DatePicker, Form, Input, Radio, Select } from "antd";
-import { sellerRegisterThunk } from "../../services/seller-thunks";
+
 
 const Register = () => {
 
@@ -16,7 +17,6 @@ const Register = () => {
     const [isSeller, setIsSeller] = useState(false)
 
     const onFinish = async (values) => {
-        console.log('Register Attempted:', values)
         const { usertype, first_name, last_name, email, username, password, gender, dob, address1, address2, city, state, zipcode, phone } = values
         const address = {
             address1,
@@ -50,22 +50,10 @@ const Register = () => {
             }
             dispatch(sellerRegisterThunk(newUser))
         }
-
-        toast.success('Registered successfully! :)', {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-        });
         navigate('/login')
     }
 
     const onFinishFailed = (errorInfo) => {
-        console.log('Register Attempt Failed:', errorInfo)
         toast.error("Error in details entered!", {
             position: "bottom-right",
             autoClose: 1000,
@@ -84,7 +72,6 @@ const Register = () => {
                 <div className="col-12">
                     <div className="card card-registration card-registration-2" style={{ borderRadius: "15px" }}>
                         <div className="card-body p-0">
-
                             <Form
                                 name="register"
                                 layout="vertical"
@@ -93,7 +80,6 @@ const Register = () => {
                                 onFinishFailed={onFinishFailed}
                             >
                                 <div className="row g-0">
-
                                     <div className="col-lg-6">
                                         <div className="p-5">
                                             <h3 className="fw-normal mb-3" style={{ color: "coral" }}> General Information </h3>
@@ -241,6 +227,7 @@ const Register = () => {
                                                     <Input addonBefore="+1" style={{ width: '100%' }} />
                                                 </Form.Item>
                                             </div>
+
                                             {/* Street */}
                                             <div className="mb-1">
                                                 <Form.Item
@@ -298,8 +285,6 @@ const Register = () => {
                                                 </Form.Item>
                                             </div>
 
-
-
                                             {/* TnC */}
                                             <div className="mb-1">
                                                 <Form.Item
@@ -322,15 +307,11 @@ const Register = () => {
                                                 </Button>
                                             </Form.Item>
 
-
                                             <ToastContainer />
                                         </div>
                                     </div>
-
-
                                 </div>
                             </Form>
-
                         </div>
                     </div>
                 </div>

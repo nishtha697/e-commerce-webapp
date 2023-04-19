@@ -40,16 +40,6 @@ const NewProduct = () => {
     useEffect(() => {
         if (trySave && newProductCreation && newProductCreation.complete) {
             if (!newProductCreation.error) {
-                toast.success("Product successfully created!", {
-                    position: "bottom-right",
-                    autoClose: 1000,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: false,
-                    draggable: false,
-                    progress: undefined,
-                    theme: "colored",
-                });
                 navigate(`/products/${newProductCreation.product.product_id}`)
             } else {
                 toast.error("Product Error creating new product!", {
@@ -77,13 +67,11 @@ const NewProduct = () => {
             category: categories,
             seller: profile.username
         }
-        console.log('Product Creation Attempted:', newProduct)
         dispatch(createProductThunk(newProduct))
         setTrySave(true)
     }
 
     const onFinishFailed = (errorInfo) => {
-        console.log('Product Creation Attempt Failed:', errorInfo)
         toast.error("Error/Missing product information!", {
             position: "bottom-right",
             autoClose: 1000,

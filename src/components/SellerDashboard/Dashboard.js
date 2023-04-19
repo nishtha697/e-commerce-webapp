@@ -1,11 +1,8 @@
 import React from "react";
 
 const Dashboard = () => {
-
     return (
-        <div>
-            TODO
-        </div>
+        <div> TODO </div>
     );
 }
 

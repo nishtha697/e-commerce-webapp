@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Button, Collapse, Select, Tag, Timeline } from 'antd';
-import { sellerByUsernameThunk } from "../../services/seller-thunks";
-import { updateOrderShipmentStatusThunk } from "../../services/orders-thunks";
 import { toast } from "react-toastify";
 import styled from "styled-components";
+import { sellerByUsernameThunk } from "../../services/seller-thunks";
+import { updateOrderShipmentStatusThunk } from "../../services/orders-thunks";
 
 const CustomPanel = styled(Collapse.Panel)`
     .ant-collapse-header{
@@ -16,22 +16,17 @@ const CustomPanel = styled(Collapse.Panel)`
 
 const Shipment = ({ order, shipment, showOrderDets }) => {
 
+    const dispatch = useDispatch();
     const { allProducts } = useSelector(state => state.productsData)
     const { type } = useSelector(state => state.user);
+    const [seller, setSeller] = useState(null);
 
     const allStatus = ['Placed', 'In-Transit', 'Delivered', 'Cancelled']
 
-    const [seller, setSeller] = useState(null);
-
-    const dispatch = useDispatch();
-
     useEffect(() => {
         dispatch(sellerByUsernameThunk({ username: shipment.seller_username }))
-            .then((result) => {
-                setSeller(result.payload);
-            }).catch((error) => {
-                console.error(error);
-            });
+            .then((result) => setSeller(result.payload))
+            .catch((error) => console.error(error));
     }, [dispatch, shipment]);
 
     const getFormattedDate = (timestamp) => {
@@ -89,10 +84,10 @@ const Shipment = ({ order, shipment, showOrderDets }) => {
 
     const getShipmentStatus = (shipment) => {
         const shipmentStatus = shipment.shipmentStatusLog[shipment.shipmentStatusLog.length - 1].status
-        if (shipmentStatus == 'Cancelled') return 'Cancelled'
-        else if (shipmentStatus == 'Placed') return 'Placed'
-        else if (shipmentStatus == 'In-Transit') return 'In-Transit'
-        else if (shipmentStatus == 'Delivered') return 'Complete'
+        if (shipmentStatus === 'Cancelled') return 'Cancelled'
+        else if (shipmentStatus === 'Placed') return 'Placed'
+        else if (shipmentStatus === 'In-Transit') return 'In-Transit'
+        else if (shipmentStatus === 'Delivered') return 'Complete'
         else return ''
     }
 
@@ -107,7 +102,6 @@ const Shipment = ({ order, shipment, showOrderDets }) => {
                     </div>
                 </div>
             }>
-
                 {shipment.products.map(orderProduct => {
                     const product = allProducts.find(product => product.product_id === orderProduct.product_id)
                     return (
@@ -123,9 +117,7 @@ const Shipment = ({ order, shipment, showOrderDets }) => {
                                 </div>
                             </div>}</>
                     )
-
                 })}
-
                 <div className="mt-2">
                     {showOrderDets &&
                         <div className="mb-2"><b>Shipping to: </b> {displayAddress(order.shippingAddress)} </div>
@@ -140,22 +132,23 @@ const Shipment = ({ order, shipment, showOrderDets }) => {
                     {type === "seller" && showOrderDets && getPendingStatus(shipment.shipmentStatusLog) &&
                         <div>
                             <b>Update Shipment Status: &nbsp; &nbsp;</b>
-                            <Select style={{ width: '200px' }} onSelect={(e) => dispatch(updateOrderShipmentStatusThunk({ orderId: order.order_id, shipmentId: shipment.shipmentId, status: e }))}>
-                                {allStatus.map(status => (
-                                    <Select.Option value={status} disabled={!getPendingStatus(shipment.shipmentStatusLog).includes(status)}> {status} </Select.Option>
-                                ))}
+                            <Select
+                                style={{ width: '200px' }}
+                                onSelect={(e) => dispatch(updateOrderShipmentStatusThunk({ orderId: order.order_id, shipmentId: shipment.shipmentId, status: e }))}
+                            >
+                                {allStatus
+                                    .map(status => (
+                                        <Select.Option value={status} disabled={!getPendingStatus(shipment.shipmentStatusLog).includes(status)}> {status} </Select.Option>
+                                    ))}
                             </Select>
                         </div>
                     }
                     {type === "buyer" && ['Placed'].includes(getShipmentStatus(shipment)) &&
-                        <Button type="primary" style={{ backgroundColor: "coral", color: "white" }}
-                            onClick={handleCancelShipment}
-                        >
+                        <Button type="primary" onClick={handleCancelShipment} style={{ backgroundColor: "coral", color: "white" }} >
                             Cancel Shipment
                         </Button>
                     }
                 </div>
-
             </CustomPanel>
         </Collapse>
     )

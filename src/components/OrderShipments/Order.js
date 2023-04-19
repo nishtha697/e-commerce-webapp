@@ -1,14 +1,10 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllProductsThunk } from "../../services/products-thunks";
-import {
-    cancelAllShipmentsThunk,
-    findOrderAndSpecificShipmentBySellerThunk,
-    findOrdersByBuyerUsernameThunk
-} from "../../services/orders-thunks";
-import Shipment from "./Shipment";
 import { Button, Collapse, Tag } from "antd";
 import styled from "styled-components";
+import { getAllProductsThunk } from "../../services/products-thunks";
+import { cancelAllShipmentsThunk, findOrderAndSpecificShipmentBySellerThunk, findOrdersByBuyerUsernameThunk } from "../../services/orders-thunks";
+import Shipment from "./Shipment";
 
 const CustomPanel = styled(Collapse.Panel)`
     .ant-collapse-header{
@@ -24,21 +20,18 @@ const Order = () => {
 
     useEffect(() => {
         dispatch(getAllProductsThunk())
-        if (type === "buyer") {
-            dispatch(findOrdersByBuyerUsernameThunk(profile.username))
-        } else if (type === "seller") {
-            dispatch(findOrderAndSpecificShipmentBySellerThunk(profile.username))
-        }
+        if (type === "buyer") dispatch(findOrdersByBuyerUsernameThunk(profile.username))
+        else if (type === "seller") dispatch(findOrderAndSpecificShipmentBySellerThunk(profile.username))
     }, [])
 
     const existingOrders = orders && orders.length > 0
 
     const getOrderStatus = (shipments) => {
         const shipmentStatus = shipments.map(shipment => shipment.shipmentStatusLog[shipment.shipmentStatusLog.length - 1].status)
-        if (shipmentStatus.every(value => value == 'Cancelled')) return 'Cancelled'
-        else if (shipmentStatus.every(value => value == 'Placed')) return 'Placed'
-        else if (shipmentStatus.every(value => value == 'In-Transit')) return 'In-Transit'
-        else if (shipmentStatus.every(value => value == 'Delivered')) return 'Complete'
+        if (shipmentStatus.every(value => value === 'Cancelled')) return 'Cancelled'
+        else if (shipmentStatus.every(value => value === 'Placed')) return 'Placed'
+        else if (shipmentStatus.every(value => value === 'In-Transit')) return 'In-Transit'
+        else if (shipmentStatus.every(value => value === 'Delivered')) return 'Complete'
         else return 'Processing'
     }
 
@@ -51,7 +44,6 @@ const Order = () => {
             {!existingOrders && <div>No orders found!</div>}
             {existingOrders && orders.map((order, idx) => {
                 const orderStatus = getOrderStatus(order.shipments)
-
                 return < Collapse className="mb-3" >
                     <CustomPanel
                         key={idx}
@@ -72,11 +64,8 @@ const Order = () => {
                         {order.shipments.map(shipment => <Shipment shipment={shipment} order={order} showOrderDets={false} />)}
                     </CustomPanel>
                 </Collapse>
-            }
-
-            )}
+            })}
         </div >)
-
 }
 
 export default Order;

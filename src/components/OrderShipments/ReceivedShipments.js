@@ -1,15 +1,13 @@
-import React, {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {
-    findOrderAndSpecificShipmentBySellerThunk,
-} from "../../services/orders-thunks";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { findOrderAndSpecificShipmentBySellerThunk } from "../../services/orders-thunks";
 import Shipment from "./Shipment";
 
 const ReceivedShipments = () => {
 
     const dispatch = useDispatch();
-    const {orders} = useSelector(state => state.ordersData)
-    const {profile} = useSelector(state => state.user);
+    const { orders } = useSelector(state => state.ordersData)
+    const { profile } = useSelector(state => state.user);
 
     const existingOrders = orders && orders.length > 0
 
@@ -19,9 +17,9 @@ const ReceivedShipments = () => {
 
     return (<div>
         {!existingOrders && <div>No orders found!</div>}
-        {existingOrders && orders && orders.map(order =>
-            order.shipments.map(shipment => <Shipment shipment={shipment} order={order}/>)
-        )}
+        {existingOrders && orders && orders
+            .map(order => order.shipments.map(shipment => <Shipment shipment={shipment} order={order} />))
+        }
     </div>);
 }
 

@@ -24,7 +24,6 @@ export const buyerLoginThunk = createAsyncThunk('buyer/login',
         }
     })
 
-
 export const buyerAddAddressThunk = createAsyncThunk('buyer/addAddress',
     async ({ username, address }, { rejectWithValue }) => {
         try {
@@ -61,11 +60,22 @@ export const buyerUpdateAddressThunk = createAsyncThunk('buyer/updateAddress',
 
 
 export const buyerUpdateProfileThunk = createAsyncThunk('buyer/updateProfile',
-async ({ username, newProfile }, { rejectWithValue }) => {
-    try {
-        const response = await axios.put(`${BUYER_API}/update-profile/${username}`, { newProfile });
-        return response.data;
-    } catch (err) {
-        return rejectWithValue(err.response.data);
-    }
-})
+    async ({ username, newProfile }, { rejectWithValue }) => {
+        try {
+            const response = await axios.put(`${BUYER_API}/update-profile/${username}`, { newProfile });
+            return response.data;
+        } catch (err) {
+            return rejectWithValue(err.response.data);
+        }
+    })
+
+
+export const buyerDeleteProfileThunk = createAsyncThunk('buyer/deleteProfile',
+    async (username, { rejectWithValue }) => {
+        try {
+            const response = axios.get(`${BUYER_API}/delete?username=${username}`);
+            return response.data;
+        } catch (err) {
+            return rejectWithValue(err.response.data);
+        }
+    })
