@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Avatar, Button, DatePicker, Form, Input, Select } from 'antd'
+import { Avatar, Button, Form, Input, Select } from 'antd'
 import { PlusOutlined, UserOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { buyerAddAddressThunk, buyerDeleteAddressThunk, buyerUpdateAddressThunk, buyerUpdateProfileThunk } from "../../services/buyer-thunks";
 import { ToastContainer, toast } from "react-toastify";

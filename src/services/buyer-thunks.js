@@ -28,6 +28,8 @@ export const buyerLoginThunk = createAsyncThunk('buyer/login',
 export const buyerAddAddressThunk = createAsyncThunk('buyer/addAddress',
     async ({ username, address }, { rejectWithValue }) => {
         try {
+            const addressId = Date.now()
+            address['id'] = addressId
             const response = await axios.put(`${BUYER_API}/add-address/${username}`, { address });
             return response.data;
         } catch (err) {

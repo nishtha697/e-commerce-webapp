@@ -62,7 +62,6 @@ const Cart = () => {
             const newAddress = incareof + "\n" + address1 + "\n" + (address2 !== undefined || address2 !== null ? address2 : "") + "\n" + city + ", " + state + ", United States, " + zipcode;
             setAddresses([...addresses, newAddress]);
             const address = {
-                id: Date.now(),
                 incareof: incareof,
                 address1: address1,
                 address2: address2,
