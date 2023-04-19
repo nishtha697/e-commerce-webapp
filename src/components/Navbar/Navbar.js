@@ -28,7 +28,6 @@ const Navbar = () => {
         { title: "Order Shipments", path: "/seller/orders", show: ["seller"] },
         { title: "Profile", path: "/profile", show: ["seller", "buyer"] },
         { title: "Logout", path: "/", show: ["seller", "buyer"], onClickHandler: handleLogout },
-
     ]
 
     return (

@@ -6,7 +6,6 @@ import {
     getProductBySellerThunk,
     getProductCategoriesThunk,
     getProductFilteredThunk,
-    getProductSellersThunk,
     updateProductThunk
 } from "../services/products-thunks";
 
@@ -139,10 +138,6 @@ const productsSlice = createSlice(
                 (state, { payload }) => {
                     state.categories = payload
                     state.filters.categories = payload
-                },
-            [getProductSellersThunk.fulfilled]:
-                (state, { payload }) => {
-                    state.filters.sellers = payload
                 },
             [getProductFilteredThunk.fulfilled]:
                 (state, { payload }) => {

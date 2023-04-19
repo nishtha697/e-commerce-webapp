@@ -5,6 +5,7 @@ import { getProductBySellerThunk } from "../../services/products-thunks.js";
 import { Button, Table, Tag } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import styled from 'styled-components'
+import { ToastContainer } from "react-toastify";
 
 const CustomTable = styled(Table)`
     table {
@@ -127,6 +128,7 @@ const ProductListings = () => {
                     />
                 </div>
             }
+            <ToastContainer />
         </div>
     );
 }

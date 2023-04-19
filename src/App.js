@@ -11,11 +11,9 @@ import Navbar from "./components/Navbar/Navbar";
 import Home from "./components/Home/Home.js";
 import Product from "./components/Home/Product.js";
 import Profile from "./components/Profile/Profile";
-import Dashboard from "./components/SellerDashboard/Dashboard";
 import ProductListings from "./components/SellerDashboard/ProductListings";
 import NewProduct from "./components/SellerDashboard/NewProduct";
 import Cart from "./components/Cart/Cart";
-import ShipmentTracking from "./components/SellerDashboard/ShipmentTracking";
 import Order from "./components/OrderShipments/Order";
 import ReceivedShipments from "./components/OrderShipments/ReceivedShipments";
 

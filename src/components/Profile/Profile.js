@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
 import { Avatar, Button, Form, Input, Select } from 'antd'
 import { PlusOutlined, UserOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { buyerAddAddressThunk, buyerDeleteAddressThunk, buyerUpdateAddressThunk, buyerUpdateProfileThunk } from "../../services/buyer-thunks";
-import { ToastContainer, toast } from "react-toastify";
+import { buyerAddAddressThunk, buyerDeleteAddressThunk, buyerDeleteProfileThunk, buyerUpdateAddressThunk, buyerUpdateProfileThunk } from "../../services/buyer-thunks";
 import { sellerUpdateProfileThunk } from "../../services/seller-thunks";
+import { useNavigate } from "react-router";
+import { logoutUser } from "../../reducers/user-reducer";
+import { shoppingCartDeleteThunk } from "../../services/cart-thunks";
 
 
 const Profile = () => {
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const { profile, type } = useSelector(state => state.user)
     const [newAddressFlag, setNewAddressFlag] = useState(false);
     const [editAddressId, setEditAddressId] = useState(null);
     const [editGeneralInfo, setEditGeneralInfo] = useState(false);
     const [editContactInfo, setEditContactInfo] = useState(false);
-
-    const addressKey = type === 'seller' ? 'business_address' : 'addresses'
 
     const getFormattedDate = (timestamp) => {
         const date = new Date(timestamp);
@@ -35,7 +37,6 @@ const Profile = () => {
             setEditAddressId(null)
             success()
         }
-
     }, [profile.addresses])
 
     useEffect(() => {
@@ -47,7 +48,6 @@ const Profile = () => {
             success()
         }
     }, [profile])
-
 
     const success = () => (
         toast.success("Profile Updated!", {
@@ -74,9 +74,8 @@ const Profile = () => {
             theme: "colored",
         }))
 
-    // UPDATE
+
     const handleEditProfileFinish = async (values) => {
-        console.log("Profile Edit Attempt: ", values)
         if (type === 'buyer') {
             dispatch(buyerUpdateProfileThunk({ username: profile.username, newProfile: values }))
         } else if (type === 'seller') {
@@ -84,37 +83,32 @@ const Profile = () => {
         }
     }
     const handleEditProfileFinishFail = (errorInfo) => {
-        console.log("Profile Edit Attempt Fail: ", errorInfo)
         fail()
     }
 
-
-
-    // UPDATE
     const handlEditAddressFinish = async (values) => {
-        console.log("Address Edit Attempt: ", values)
         dispatch(buyerUpdateAddressThunk({ username: profile.username, address: { ...values, id: editAddressId } }))
     }
     const handleEditAddressFinishFail = (errorInfo) => {
-        console.log("Address Edit Attempt Fail: ", errorInfo)
         fail()
     }
 
-    // DELETE
     const handleAddresDelete = (addressId) => {
-        console.log("Delete Address Attempt: ", addressId)
         dispatch(buyerDeleteAddressThunk({ username: profile.username, addressId }));
     }
-
-
-    // CREATE
     const handleNewAddressFinish = async (values) => {
-        console.log("New Address Save Attempt: ", values)
         dispatch(buyerAddAddressThunk({ username: profile.username, address: values }));
     }
+
     const handleNewAddressFinishFail = (errorInfo) => {
-        console.log("New Address Save Attempt Fail: ", errorInfo)
         fail()
+    }
+
+    const handleProfileDelete = () => {
+        dispatch(buyerDeleteProfileThunk(profile.username))
+        .then(() => dispatch(shoppingCartDeleteThunk(profile.username)))
+        .then(() => dispatch(logoutUser()))
+        .then(() => navigate('/'))    
     }
 
 
@@ -338,8 +332,11 @@ const Profile = () => {
                 </div>
             </div>
 
-            <ToastContainer />
 
+            <div>
+                <Button danger onClick={handleProfileDelete}>Delete Profile</Button>
+            </div>
+            <ToastContainer />
         </div >
 
     );

@@ -34,33 +34,18 @@ const Login = () => {
                 theme: "colored",
             });
         } else if (currentUser) {
-            toast.success("Login successful!", {
-                position: "bottom-right",
-                autoClose: 1000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: false,
-                progress: undefined,
-                theme: "colored",
-            });
             if (type === 'buyer') navigate('/');
             else navigate('/seller/productlistings')
         }
     }, [lastAttempt])
 
     const onFinish = async (values) => {
-        console.log('Login Attempted:', values)
         const { username, password, usertype } = values
-        if (usertype === 'buyer') {
-            dispatch(buyerLoginThunk({ username, password }))
-        } else {
-            dispatch(sellerLoginThunk({ username, password }))
-        }
+        if (usertype === 'buyer') dispatch(buyerLoginThunk({ username, password }))
+        else dispatch(sellerLoginThunk({ username, password }))
     }
 
     const onFinishFailed = (errorInfo) => {
-        console.log('Login Attempt Failed:', errorInfo)
         toast.error("Error in username/password!", {
             position: "bottom-right",
             autoClose: 1000,

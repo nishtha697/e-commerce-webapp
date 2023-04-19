@@ -1,10 +1,7 @@
 import React, { useState } from "react";
-import { Button, Tag } from "antd";
 import { useDispatch } from "react-redux";
-import {
-    shoppingCartDeleteProductThunk,
-    shoppingCartUpdateProductThunk
-} from "../../services/cart-thunks";
+import { Button, Tag } from "antd";
+import { shoppingCartDeleteProductThunk, shoppingCartUpdateProductThunk } from "../../services/cart-thunks";
 
 const CartItem = ({ product, initialQuantity, user }, width = "180px", height = "180px") => {
 
@@ -19,13 +16,13 @@ const CartItem = ({ product, initialQuantity, user }, width = "180px", height = 
             quantity: event.target.value
         }))
     }
+
     const handleDelete = () => {
         dispatch(shoppingCartDeleteProductThunk({
             username: user.username,
             productId: product.product_id
         }))
     }
-
 
     return (<>
         {product && <li aria-current="true" className="list-group-item mb-4">

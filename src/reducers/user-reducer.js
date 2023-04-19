@@ -1,10 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { buyerLoginThunk, buyerAddAddressThunk, buyerDeleteAddressThunk, buyerUpdateAddressThunk, buyerUpdateProfileThunk } from "../services/buyer-thunks.js";
-import {
-    sellerByUsernameThunk,
-    sellerLoginThunk,
-    sellerUpdateProfileThunk
-} from "../services/seller-thunks.js";
+import { sellerLoginThunk, sellerUpdateProfileThunk } from "../services/seller-thunks.js";
 
 const initialState = {
     lastAttempt: null,
@@ -75,7 +71,7 @@ const userSlice = createSlice(
                     state.error = null;
                 },
             [sellerLoginThunk.rejected]:
-                (state, action ) => {
+                (state, action) => {
                     state.lastAttempt = Date.now();
                     state.profile = null;
                     state.type = null;

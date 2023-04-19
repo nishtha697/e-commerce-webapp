@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
-    shoppingCartCreateThunk,
     shoppingCartDeleteProductThunk,
     shoppingCartDeleteThunk,
     shoppingCartFindThunk,
@@ -41,18 +40,6 @@ const shoppingCartSlice = createSlice(
             [shoppingCartDeleteThunk.rejected]:
                 (state, action) => {
                     state.error = action.error
-                },
-            [shoppingCartCreateThunk.pending]:
-                (state, { payload }) => {
-                    state.shoppingCart = {}
-                },
-            [shoppingCartCreateThunk.fulfilled]:
-                (state, { payload }) => {
-                    state.shoppingCart.product = payload
-                },
-            [shoppingCartCreateThunk.rejected]:
-                (state, { payload }) => {
-                    state.shoppingCart = {}
                 },
             [shoppingCartUpdateProductThunk.fulfilled]:
                 (state, { payload }) => {

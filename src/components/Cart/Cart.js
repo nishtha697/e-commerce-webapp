@@ -6,8 +6,8 @@ import { PlusOutlined } from '@ant-design/icons';
 import { shoppingCartDeleteThunk, shoppingCartFindThunk } from "../../services/cart-thunks";
 import { buyerAddAddressThunk } from "../../services/buyer-thunks";
 import { getAllProductsThunk } from "../../services/products-thunks.js";
-import CartItem from "./CartItem";
 import { createOrderThunk } from "../../services/orders-thunks";
+import CartItem from "./CartItem";
 
 const Cart = () => {
     const dispatch = useDispatch();
@@ -17,14 +17,6 @@ const Cart = () => {
     const { allProducts } = useSelector(state => state.productsData)
     const [totalPrice, setTotalPrice] = useState(0);
     const inputRef = useRef(null);
-
-    // const initialAddresses = profile.addresses && profile.addresses.map(address => {
-    //     if (address != null) {
-    //         return address.incareof + "\n" + address.address1 + "\n" +
-    //             (address.address2 !== undefined || address.address2 !== null ? address.address2 : "")
-    //             + "\n" + address.city + ", " + address.state + ", United States, " + address.zipcode
-    //     }
-    // })
 
     const initialAddresses = profile.addresses && profile.addresses.map(address => {
         if (address != null) {
@@ -38,29 +30,23 @@ const Cart = () => {
     });
 
     const [incareof, setInCareOf] = useState('');
-    const onInCareOfChange = (event) => {
-        setInCareOf(event.target.value)
-    }
+    const onInCareOfChange = (event) => setInCareOf(event.target.value)
+
     const [address1, setAddress1] = useState('');
-    const onAddress1Change = (event) => {
-        setAddress1(event.target.value)
-    }
+    const onAddress1Change = (event) => setAddress1(event.target.value)
+
     const [address2, setAddress2] = useState('');
-    const onAddress2Change = (event) => {
-        setAddress2(event.target.value)
-    }
+    const onAddress2Change = (event) => setAddress2(event.target.value)
+
     const [city, setCity] = useState('');
-    const onCityChange = (event) => {
-        setCity(event.target.value)
-    }
+    const onCityChange = (event) => setCity(event.target.value)
+
     const [state, setState] = useState('');
-    const onStateChange = (event) => {
-        setState(event.target.value)
-    }
+    const onStateChange = (event) => setState(event.target.value)
+
     const [zipcode, setZip] = useState('');
-    const onZipChange = (event) => {
-        setZip(event.target.value)
-    }
+    const onZipChange = (event) => setZip(event.target.value)
+
     const [addresses, setAddresses] = useState(initialAddresses);
     const [selectedAddress, setSelectedAddresses] = useState(addresses[0].address);
     const [selectedAddressId, setSelectedAddressId] = useState(addresses[0].id);
@@ -211,10 +197,11 @@ const Cart = () => {
             {cartFull && <Button danger onClick={() => dispatch(shoppingCartDeleteThunk(profile.username))}>Delete Cart</Button>}
         </div>
         {!cartFull && <div className="mb-5"> <b>No products added to the cart</b></div>}
-        {cartFull && shoppingCart.products && allProducts && shoppingCart.products.slice(0).reverse().map(shoppingCartProduct => {
-            const product = allProducts.find(product => product.product_id === shoppingCartProduct.productId)
-            return <CartItem product={product} initialQuantity={shoppingCartProduct.quantity} user={profile} />
-        })
+        {cartFull && shoppingCart.products && allProducts && shoppingCart.products.slice(0).reverse()
+            .map(shoppingCartProduct => {
+                const product = allProducts.find(product => product.product_id === shoppingCartProduct.productId)
+                return <CartItem product={product} initialQuantity={shoppingCartProduct.quantity} user={profile} />
+            })
         }
         {cartFull &&
             <>
@@ -285,18 +272,15 @@ const Cart = () => {
                     <div className="mt-3 mb-3 mb-1 col-2">Payment Method: <br /><b>Cash on Delivery</b></div>
                 </div>
                 <h5 className="pt-3 d-inline">Total Price: <b>${totalPrice.toFixed(2)}</b></h5>
-                <Button large size="large"
+                <Button large size="large" onClick={handleCheckout}
                     style={{ background: "coral", color: "white", border: "coral", float: "right", marginRight: "65px" }}
-                    onClick={handleCheckout}
                 >
                     Checkout
                 </Button>
             </>
         }
-
         <ToastContainer />
     </>
-
     );
 }
 

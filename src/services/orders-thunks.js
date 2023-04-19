@@ -5,7 +5,7 @@ const ORDER_API = 'http://localhost:4000/api/orders';
 
 export const createOrderThunk = createAsyncThunk('order/create',
     async (order, { rejectWithValue }) => {
-        try { 
+        try {
             const response = await axios.post(ORDER_API, order);
             return response.data;
         } catch (err) {
@@ -18,17 +18,6 @@ export const findOrdersByBuyerUsernameThunk = createAsyncThunk('order/findByBuye
     async (buyer_username, { rejectWithValue }) => {
         try {
             const response = await axios.get(`${ORDER_API}/buyer/${buyer_username}`);
-            return response.data;
-        } catch (err) {
-            return rejectWithValue(err.response.data);
-        }
-    }
-);
-
-export const findOrderByIdThunk = createAsyncThunk('order/findById',
-    async (orderId, { rejectWithValue }) => {
-        try {
-            const response = await axios.get(`${ORDER_API}/${orderId}`);
             return response.data;
         } catch (err) {
             return rejectWithValue(err.response.data);

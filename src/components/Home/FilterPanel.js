@@ -1,6 +1,6 @@
-import { Form, Button, Input, Select, Slider } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Form, Button, Input, Select, Slider } from "antd";
 import { clearAppliedFilters, updateAppliedFilters } from "../../reducers/products-reducer";
 import { getProductFilteredThunk } from "../../services/products-thunks";
 
@@ -136,9 +136,7 @@ const FilterPanel = () => {
                     </Form.Item>
 
                     <Form.Item >
-                        <Button type="primary" style={{ backgroundColor: "coral", color: "white" }}
-                            onClick={handleClearFilters}
-                        >
+                        <Button type="primary" onClick={handleClearFilters} style={{ backgroundColor: "coral", color: "white" }}>
                             Clear Filters
                         </Button>
                     </Form.Item>
