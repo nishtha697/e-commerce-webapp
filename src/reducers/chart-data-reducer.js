@@ -5,7 +5,6 @@ const initialState = {
     userDemographicData: [],
     categoriesData: [],
     timelineData: [],
-    categoriesTopLevelData: [],
     revenueData: [],
     error: null,
 };
@@ -22,7 +21,6 @@ const chartDataSlice = createSlice({
                                                state.userDemographicData = payload.userDemographicData;
                                                state.categoriesData = payload.categoriesData;
                                                state.timelineData = payload.timelineData;
-                                               state.categoriesTopLevelData = payload.categoriesTopLevelData;
                                                state.revenueData = payload.revenueData;
 
                                                state.error = null;

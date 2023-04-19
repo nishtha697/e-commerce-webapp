@@ -16,6 +16,7 @@ import NewProduct from "./components/SellerDashboard/NewProduct";
 import Cart from "./components/Cart/Cart";
 import Order from "./components/OrderShipments/Order";
 import ReceivedShipments from "./components/OrderShipments/ReceivedShipments";
+import Dashboard from "./components/SellerDashboard/Dashboard";
 
 function App() {
 

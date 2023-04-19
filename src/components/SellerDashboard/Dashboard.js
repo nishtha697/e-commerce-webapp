@@ -4,6 +4,9 @@ import {fetchChartDataThunk} from '../../services/chart-data-thunks';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import {Card} from "antd";
+import HighchartsDrilldown from "highcharts/modules/drilldown";
+
+HighchartsDrilldown(Highcharts);
 
 const Dashboard = () => {
     const dispatch = useDispatch();
@@ -12,7 +15,6 @@ const Dashboard = () => {
         userDemographicData,
         categoriesData,
         timelineData,
-        categoriesTopLevelData,
         revenueData
     } = chartData;
     const {profile} = useSelector(state => state.user);
@@ -42,84 +44,10 @@ const Dashboard = () => {
         series: [demographicsSeries],
     };
 
-    const categoriesSeries = {
-        name: "Categories",
-        data: categoriesData.map((item) => ({
-            name: item._id,
-            y: item.count,
-        })),
-    };
-
-    const categoriesChartOptions = {
-        chart: {
-            type: "column",
-        },
-        title: {
-            text: "Categories",
-        },
-        subtitle: {
-            text: "Analyses the categories distribution of products for the placed orders",
-        },
-        xAxis: {
-            categories: categoriesData.map((item) => item._id),
-            title: {
-                text: "Category",
-            },
-        },
-        yAxis: {
-            min: 0,
-            title: {
-                text: "Count",
-                align: "high",
-            },
-        },
-        plotOptions: {
-            column: {
-                dataLabels: {
-                    enabled: true,
-                },
-            },
-        },
-        series: [categoriesSeries],
-    };
-
-    const generateTopLevelCategoryChartOptions = (categoryData, topLevelCategory) => {
-        const seriesData = categoryData.map((item) => ({
-            name: item._id[1], // Second level category
-            y: item.count,
-        }));
-
-        return {
-            chart: {
-                type: "bar",
-            },
-            title: {
-                text: `Product Distribution for ${topLevelCategory}`,
-            },
-            xAxis: {
-                categories: seriesData.map((item) => item.name),
-                title: {
-                    text: "Second-level Categories",
-                },
-            },
-            yAxis: {
-                min: 0,
-                title: {
-                    text: "Number of Items Sold",
-                },
-            },
-            series: [
-                {
-                    name: "Products",
-                    data: seriesData,
-                },
-            ],
-        };
-    };
 
     const timelineOptions = {
         title: {
-            text: 'Timeline'
+            text: 'Order Timeline'
         },
         subtitle: {
             text: "Analyses the order time distribution of placed orders",
@@ -143,7 +71,7 @@ const Dashboard = () => {
 
     const revenueOptions = {
         chart: {
-            type: 'column',
+            type: 'bar',
             zoomType: "xy"
         },
         title: {
@@ -171,7 +99,7 @@ const Dashboard = () => {
             color: "#65bd5c"
         }],
         plotOptions: {
-            column: {
+            bar: {
                 dataLabels: {
                     enabled: true,
                 },
@@ -179,7 +107,128 @@ const Dashboard = () => {
         },
     };
 
-    return (
+    const generateCategoryChartOptions = (categoriesData) => {
+        const topLevelSeriesData = categoriesData.map((item) => {
+            const totalCount = item.secondLevelCategories.reduce(
+                (acc, secondLevelCategory) =>
+                    acc +
+                    secondLevelCategory.thirdLevelCategories.reduce(
+                        (innerAcc, thirdLevelCategory) => innerAcc + thirdLevelCategory.count,
+                        0,
+                    ),
+                0,
+            );
+
+            return {
+                name: item._id,
+                y: totalCount,
+                drilldown: item._id,
+            };
+        });
+
+        const secondLevelDrilldownSeries = categoriesData.flatMap(
+            (topLevelCategory) =>
+                topLevelCategory.secondLevelCategories.map((secondLevelCategory) => {
+                    const secondLevelTotalCount = secondLevelCategory.thirdLevelCategories.reduce(
+                        (acc, thirdLevelCategory) => acc + thirdLevelCategory.count,
+                        0,
+                    );
+
+                    return {
+                        id: `${topLevelCategory._id}-${secondLevelCategory.secondLevelCategory}`,
+                        name: secondLevelCategory.secondLevelCategory,
+                        data: secondLevelCategory.thirdLevelCategories.map((thirdLevelCategory) => ({
+                            name: thirdLevelCategory.thirdLevelCategory,
+                            y: thirdLevelCategory.count,
+                        })),
+                    };
+                }),
+        );
+
+        const drilldownSeries = categoriesData.map((topLevelCategory) => ({
+            id: topLevelCategory._id,
+            name: topLevelCategory._id,
+            data: topLevelCategory.secondLevelCategories.map((secondLevelCategory) => ({
+                name: secondLevelCategory.secondLevelCategory,
+                y: secondLevelCategory.thirdLevelCategories.reduce(
+                    (acc, thirdLevelCategory) => acc + thirdLevelCategory.count,
+                    0,
+                ),
+                drilldown: `${topLevelCategory._id}-${secondLevelCategory.secondLevelCategory}`,
+            })),
+        })).concat(secondLevelDrilldownSeries);
+
+
+        return {
+            chart: {
+                type: "bar",
+                events: {
+                    drilldown: function (e) {
+                        this.setTitle({ text: e.point.name });
+                    },
+                    drillup: function (e) {
+                        this.setTitle({ text: e.seriesOptions.name });
+                    },
+                },
+            },
+            title: {
+                text: "Product Distribution by Categories",
+            },
+            subtitle: {
+                text: "Product distribution by categories of placed orders. Click on the bars for categories to see distribution within those categories.",
+            },
+            xAxis: {
+                type: "category",
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: "Number of Items Sold",
+                },
+            },
+            series: [
+                {
+                    name: "Products",
+                    data: topLevelSeriesData,
+                },
+            ],
+            drilldown: {
+                series: drilldownSeries,
+                drillUpButton: {
+                    relativeTo: "spacingBox",
+                    position: {
+                        y: 0,
+                        x: 0,
+                    },
+                    theme: {
+                        fill: "white",
+                        "stroke-width": 1,
+                        stroke: "silver",
+                        r: 0,
+                        states: {
+                            hover: {
+                                fill: "#a4edba",
+                            },
+                            select: {
+                                stroke: "#039",
+                                fill: "#a4edba",
+                            },
+                        },
+                    },
+                },
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true,
+                    },
+                },
+            },
+        };
+    };
+
+
+        return (
         <div>
             <h4 className="mb-4">Analytics of Placed Orders</h4>
             <Card className="mt-2 mb-4">
@@ -191,31 +240,16 @@ const Dashboard = () => {
             <Card className="mt-4 mb-4">
                 <HighchartsReact
                     highcharts={Highcharts}
-                    options={categoriesChartOptions}
+                    options={revenueOptions}
                 />
             </Card>
             <Card className="mt-4 mb-4">
                 <HighchartsReact
                     highcharts={Highcharts}
-                    options={revenueOptions}
+                    options={generateCategoryChartOptions(categoriesData)}
                 />
             </Card>
-            {/*{categoriesTopLevelData.map((topLevelCategory) => {*/}
-            {/*    const categoryData = categoriesData.filter(*/}
-            {/*        (item) => item._id[0] === topLevelCategory*/}
-            {/*    );*/}
 
-            {/*    return (*/}
-            {/*        <HighchartsReact*/}
-            {/*            key={topLevelCategory}*/}
-            {/*            highcharts={Highcharts}*/}
-            {/*            options={generateTopLevelCategoryChartOptions(*/}
-            {/*                categoryData,*/}
-            {/*                topLevelCategory*/}
-            {/*            )}*/}
-            {/*        />*/}
-            {/*    );*/}
-            {/*})}*/}
             <Card className="mt-4 mb-4">
                 <HighchartsReact
                     highcharts={Highcharts}
