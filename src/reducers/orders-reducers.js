@@ -22,8 +22,8 @@ const orderSlice = createSlice({
                                            state.error = null;
                                            state.orders.push(payload);
                                        },
-                                       [createOrderThunk.rejected]: (state, {payload}) => {
-                                           state.error = payload;
+                                       [createOrderThunk.rejected]: (state, action) => {
+                                           state.error = action.error;
                                        },
                                        [findOrdersByBuyerUsernameThunk.fulfilled]: (state,
                                                                                     {payload}) => {
@@ -31,15 +31,15 @@ const orderSlice = createSlice({
                                            state.orders = payload;
                                        },
                                        [findOrdersByBuyerUsernameThunk.rejected]: (state,
-                                                                                   {payload}) => {
-                                           state.error = payload;
+                                                                                   action) => {
+                                           state.error = action.error;
                                        },
                                        [findOrdersBySellerThunk.fulfilled]: (state, {payload}) => {
                                            state.error = null;
                                            state.orders = payload;
                                        },
-                                       [findOrdersBySellerThunk.rejected]: (state, {payload}) => {
-                                           state.error = payload;
+                                       [findOrdersBySellerThunk.rejected]: (state, action) => {
+                                           state.error = action.error;
                                        },
                                        [findOrderAndSpecificShipmentBySellerThunk.fulfilled]: (state,
                                                                                                {payload}) => {
@@ -47,8 +47,8 @@ const orderSlice = createSlice({
                                            state.orders = payload;
                                        },
                                        [findOrderAndSpecificShipmentBySellerThunk.rejected]: (state,
-                                                                                              {payload}) => {
-                                           state.error = payload;
+                                                                                              action) => {
+                                           state.error = action.error;
                                        },
                                        [updateOrderShipmentStatusThunk.fulfilled]: (state,
                                                                                     {payload}) => {
@@ -62,8 +62,8 @@ const orderSlice = createSlice({
                                                payload.shipmentStatusLog;
                                        },
                                        [updateOrderShipmentStatusThunk.rejected]: (state,
-                                                                                   {payload}) => {
-                                           state.error = payload;
+                                                                                   action) => {
+                                           state.error = action.error;
                                        },
                                        [cancelAllShipmentsThunk.fulfilled]: (state, {payload}) => {
                                            state.error = null;
@@ -75,8 +75,8 @@ const orderSlice = createSlice({
                                                        payload.shipmentStatusLog;
                                                });
                                        },
-                                       [cancelAllShipmentsThunk.rejected]: (state, {payload}) => {
-                                           state.error = payload;
+                                       [cancelAllShipmentsThunk.rejected]: (state, action) => {
+                                           state.error = action.error;
                                        },
                                    },
                                });
