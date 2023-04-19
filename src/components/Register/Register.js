@@ -9,7 +9,6 @@ import { Button, Checkbox, DatePicker, Form, Input, Radio, Select } from "antd";
 import { sellerRegisterThunk } from "../../services/seller-thunks";
 
 const Register = () => {
-
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -84,7 +83,6 @@ const Register = () => {
                 <div className="col-12">
                     <div className="card card-registration card-registration-2" style={{ borderRadius: "15px" }}>
                         <div className="card-body p-0">
-
                             <Form
                                 name="register"
                                 layout="vertical"
@@ -93,7 +91,6 @@ const Register = () => {
                                 onFinishFailed={onFinishFailed}
                             >
                                 <div className="row g-0">
-
                                     <div className="col-lg-6">
                                         <div className="p-5">
                                             <h3 className="fw-normal mb-3" style={{ color: "coral" }}> General Information </h3>
@@ -224,6 +221,7 @@ const Register = () => {
                                                     <Select>
                                                         <Select.Option value="Male">Male</Select.Option>
                                                         <Select.Option value="Female">Female</Select.Option>
+                                                        <Select.Option value="Other">Other</Select.Option>
                                                     </Select>
                                                 </Form.Item>
                                             </div>}
