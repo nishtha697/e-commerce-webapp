@@ -22,7 +22,7 @@ const Cart = () => {
         if (address != null) {
             return {
                 id: address.id,
-                address: address.incareof + "\n" + address.address1 + "\n" +
+                address: (address.incareof? (address.incareof + "\n"): "") + address.address1 + "\n" +
                     (address.address2 !== undefined || address.address2 !== null ? address.address2 : "")
                     + "\n" + address.city + ", " + address.state + ", United States, " + address.zipcode
             };

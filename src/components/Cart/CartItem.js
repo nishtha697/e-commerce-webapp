@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { Button, Tag } from "antd";
 import { shoppingCartDeleteProductThunk, shoppingCartUpdateProductThunk } from "../../services/cart-thunks";
 
-const CartItem = ({ product, initialQuantity, user }, width = "180px", height = "180px") => {
+const CartItem = ({ product, initialQuantity, user }) => {
 
     const dispatch = useDispatch();
     const [quantity, setQuantity] = useState(initialQuantity);
@@ -28,7 +28,7 @@ const CartItem = ({ product, initialQuantity, user }, width = "180px", height = 
         {product && <li aria-current="true" className="list-group-item mb-4">
             <div className="row pb-2 mt-3 border-bottom">
                 <div className="col-2 col-lg-2 col-md-3 d-none d-md-block align-self-center">
-                    <img className="wd-post-image" height={height} width={width} src={`${product.product_image}`} alt="" />
+                    <img className="wd-post-image" style={{ width: "100%", height: "auto", maxHeight: '200px', maxWidth: '200px' }} src={`${product.product_image}`} alt="" />
                 </div>
 
                 <div className="col-10 col-lg-10 col-md-9">
