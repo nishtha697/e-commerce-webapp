@@ -55,7 +55,6 @@ const Cart = () => {
     const [selectedAddressId, setSelectedAddressId] = useState(addresses[0].id);
 
     const handleAddressValueChange = (value, option) => {
-        console.log('HERE')
         const { value: selectedId, label: selectedAddress } = option;
         setSelectedAddresses(selectedAddress)
         setSelectedAddressId(selectedId);

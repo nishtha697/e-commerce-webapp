@@ -18,7 +18,10 @@ const ReceivedShipments = () => {
     return (<div>
         {!existingOrders && <div>No orders found!</div>}
         {existingOrders && orders && orders
-            .map(order => order.shipments.map(shipment => <Shipment shipment={shipment} order={order} />))
+            .map(order => order.shipments
+                .filter(shipment => shipment.seller_username === profile.username)
+                .map(shipment => <Shipment shipment={shipment} order={order} />)
+            )
         }
     </div>);
 }
