@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import { Route, Routes } from "react-router";
+import { Navigate, Route, Routes } from "react-router";
 import { useSelector } from "react-redux";
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -29,7 +29,7 @@ function App() {
                 <div className="m-5" style={{ minHeight: "50vh" }}>
                     <Routes>
                         <Route path="/products/:id" element={<Product />} />
-                        {user.type !== "seller" && <Route index element={<Home />} />}
+                        <Route index element={user.type === "seller" ? <Navigate to="/seller/productlistings" /> : <Home />} />
                         {user.type === "buyer" && <Route path="/cart" element={<Cart />} />}
                         {user.type === "buyer" && <Route path="/orders" element={<Order />} />}
                         {user.type === "seller" && <Route path="/seller/productlistings" element={<ProductListings />} />}
