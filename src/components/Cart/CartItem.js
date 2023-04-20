@@ -39,8 +39,8 @@ const CartItem = ({ product, initialQuantity, user }) => {
                             <div>
                                 {product.category && product.category
                                     .filter(c => c !== 'Other')
-                                    .map(c =>
-                                        <span key={c} style={{ background: "coral" }} className="badge badge-pill badge-warning me-3 mb-2" >
+                                    .map((c, idx) =>
+                                        <span key={`${c} ${idx}`} style={{ background: "coral" }} className="badge badge-pill badge-warning me-3 mb-2" >
                                             {c}
                                         </span>
                                     )}

@@ -26,7 +26,7 @@ const Cart = () => {
             return {
                 id: address.id,
                 address: (address.incareof ? (address.incareof + "\n") : "") + address.address1 + "\n" +
-                    (address.address2 !== undefined || address.address2 !== null ? address.address2 : "")
+                    (address.address2 ? address.address2 : "")
                     + "\n" + address.city + ", " + address.state + ", United States, " + address.zipcode
             };
         }
@@ -55,6 +55,7 @@ const Cart = () => {
     const [selectedAddressId, setSelectedAddressId] = useState(addresses[0].id);
 
     const handleAddressValueChange = (value, option) => {
+        console.log('here')
         const { value: selectedId, label: selectedAddress } = option;
         setSelectedAddresses(selectedAddress)
         setSelectedAddressId(selectedId);
@@ -221,9 +222,9 @@ const Cart = () => {
         </div>
         {!cartFull && <div className="mb-5"> <b>No products added to the cart</b></div>}
         {cartFull && shoppingCart.products && allProducts && shoppingCart.products.slice(0).reverse()
-            .map(shoppingCartProduct => {
+            .map((shoppingCartProduct, idx) => {
                 const product = allProducts.find(product => product.product_id === shoppingCartProduct.productId)
-                return <CartItem product={product} initialQuantity={shoppingCartProduct.quantity} user={profile} />
+                return <CartItem key={idx} product={product} initialQuantity={shoppingCartProduct.quantity} user={profile} />
             })
         }
         {cartFull &&
@@ -235,7 +236,7 @@ const Cart = () => {
                             style={{ width: 1000 }}
                             placeholder="Shipping Address"
                             value={selectedAddress}
-                            onChange={handleAddressValueChange}
+                            onSelect={handleAddressValueChange}
                             dropdownRender={(menu) => (
                                 <>
                                     {menu}
@@ -295,7 +296,7 @@ const Cart = () => {
                     <div className="mt-3 mb-3 mb-1 col-2">Payment Method: <br /><b>Cash on Delivery</b></div>
                 </div>
                 <h5 className="pt-3 d-inline">Total Price: <b>${totalPrice.toFixed(2)}</b></h5>
-                <Button large size="large" onClick={handleCheckout}
+                <Button size="large" onClick={handleCheckout}
                     style={{ background: "coral", color: "white", border: "coral", float: "right", marginRight: "65px" }}
                 >
                     Checkout
