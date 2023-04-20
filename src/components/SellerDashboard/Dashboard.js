@@ -1,9 +1,9 @@
-import React, {useEffect} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {fetchChartDataThunk} from '../../services/chart-data-thunks';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchChartDataThunk } from '../../services/chart-data-thunks';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import {Card} from "antd";
+import { Card } from "antd";
 import HighchartsDrilldown from "highcharts/modules/drilldown";
 
 HighchartsDrilldown(Highcharts);
@@ -17,7 +17,7 @@ const Dashboard = () => {
         timelineData,
         revenueData
     } = chartData;
-    const {profile} = useSelector(state => state.user);
+    const { profile } = useSelector(state => state.user);
 
     useEffect(() => {
         dispatch(fetchChartDataThunk(profile.username));
@@ -228,7 +228,7 @@ const Dashboard = () => {
     };
 
 
-        return (
+    return (
         <div>
             <h4 className="mb-4">Analytics of Placed Orders</h4>
             <Card className="mt-2 mb-4">

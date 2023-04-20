@@ -106,9 +106,9 @@ const Profile = () => {
 
     const handleProfileDelete = () => {
         dispatch(buyerDeleteProfileThunk(profile.username))
-        .then(() => dispatch(shoppingCartDeleteThunk(profile.username)))
-        .then(() => dispatch(logoutUser()))
-        .then(() => navigate('/'))    
+            .then(() => dispatch(shoppingCartDeleteThunk(profile.username)))
+            .then(() => dispatch(logoutUser()))
+            .then(() => navigate('/'))
     }
 
 
