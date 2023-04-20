@@ -86,12 +86,12 @@ const ProductListings = () => {
         },
         {
             title: '# Orders',
-            dataIndex: 'numorders',
+            dataIndex: 'order_count',
             key: 'numorders',
             width: "10%",
             ellipsis: true,
             align: 'center',
-            sorter: (a, b) => a.numorders - b.numorders,
+            sorter: (a, b) => a.order_count - b.order_count,
         },
         {
             title: 'Category',

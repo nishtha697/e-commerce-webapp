@@ -8,6 +8,7 @@ import { buyerAddAddressThunk } from "../../services/buyer-thunks";
 import { getAllProductsThunk } from "../../services/products-thunks.js";
 import { createOrderThunk } from "../../services/orders-thunks";
 import CartItem from "./CartItem";
+import { clearOrderReducer } from "../../reducers/orders-reducers";
 
 const Cart = () => {
     const dispatch = useDispatch();
@@ -15,14 +16,16 @@ const Cart = () => {
     const { profile } = useSelector(state => state.user);
     const { shoppingCart } = useSelector(state => state.shoppingCartData);
     const { allProducts } = useSelector(state => state.productsData)
+    const { error, orders } = useSelector(state => state.ordersData)
     const [totalPrice, setTotalPrice] = useState(0);
+    const [orderPlaced, setOrderPlaced] = useState(false);
     const inputRef = useRef(null);
 
     const initialAddresses = profile.addresses && profile.addresses.map(address => {
         if (address != null) {
             return {
                 id: address.id,
-                address: (address.incareof? (address.incareof + "\n"): "") + address.address1 + "\n" +
+                address: (address.incareof ? (address.incareof + "\n") : "") + address.address1 + "\n" +
                     (address.address2 !== undefined || address.address2 !== null ? address.address2 : "")
                     + "\n" + address.city + ", " + address.state + ", United States, " + address.zipcode
             };
@@ -52,10 +55,40 @@ const Cart = () => {
     const [selectedAddressId, setSelectedAddressId] = useState(addresses[0].id);
 
     const handleAddressValueChange = (value, option) => {
+        console.log('HERE')
         const { value: selectedId, label: selectedAddress } = option;
         setSelectedAddresses(selectedAddress)
         setSelectedAddressId(selectedId);
     }
+
+    useEffect(() => {
+        if (orderPlaced) {
+            if (!error) {
+                dispatch(shoppingCartDeleteThunk(profile.username))
+                toast.success('Order placed! :)', {
+                    position: "top-right",
+                    autoClose: 1000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                });
+            } else {
+                toast.error('Order coud not be placed!', {
+                    position: "top-right",
+                    autoClose: 1000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                });
+            }
+        }
+    }, [orders, error])
 
     const addItem = (e) => {
         e.preventDefault();
@@ -105,6 +138,7 @@ const Cart = () => {
         if (profile.username) {
             dispatch(shoppingCartFindThunk(profile.username))
         }
+        return () => dispatch(clearOrderReducer())
     }, [])
 
     useEffect(() => {
@@ -175,17 +209,7 @@ const Cart = () => {
             "shipments": shipments
         }
         dispatch(createOrderThunk(order))
-        dispatch(shoppingCartDeleteThunk(profile.username))
-        toast.success('Order placed! :)', {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-        });
+        setOrderPlaced(true)
     }
 
     const cartFull = shoppingCart && shoppingCart.products && shoppingCart.products.length > 0
