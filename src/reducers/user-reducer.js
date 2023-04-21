@@ -1,12 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { buyerLoginThunk, buyerAddAddressThunk, buyerDeleteAddressThunk, buyerUpdateAddressThunk, buyerUpdateProfileThunk } from "../services/buyer-thunks.js";
-import { sellerLoginThunk, sellerUpdateProfileThunk } from "../services/seller-thunks.js";
+import { buyerLoginThunk, buyerAddAddressThunk, buyerDeleteAddressThunk, buyerUpdateAddressThunk, buyerUpdateProfileThunk, buyerRegisterThunk } from "../services/buyer-thunks.js";
+import { sellerLoginThunk, sellerRegisterThunk, sellerUpdateProfileThunk } from "../services/seller-thunks.js";
 
 const initialState = {
     lastAttempt: null,
     profile: null,
     type: null,
-    error: null
+    error: null,
+    registerError: null
 }
 
 const userSlice = createSlice(
@@ -26,6 +27,24 @@ const userSlice = createSlice(
             }
         },
         extraReducers: {
+            [buyerRegisterThunk.fulfilled]:
+                (state) => {
+                    state.registerError = null;
+                },
+            [buyerRegisterThunk.rejected]:
+                (state, { payload }) => {
+                    console.log(payload)
+                    state.registerError = payload.error;
+                },
+            [sellerRegisterThunk.fulfilled]:
+                (state) => {
+                    state.registerError = null;
+                },
+            [sellerRegisterThunk.rejected]:
+                (state, { payload }) => {
+                    console.log(payload)
+                    state.registerError = payload.error;
+                },
             [buyerLoginThunk.fulfilled]:
                 (state, { payload }) => {
                     state.lastAttempt = Date.now();

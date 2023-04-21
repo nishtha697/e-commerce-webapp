@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { ToastContainer, toast } from 'react-toastify';
 import { Button, Checkbox, DatePicker, Form, Input, Radio, Select } from "antd";
@@ -14,6 +14,28 @@ const Register = () => {
     const navigate = useNavigate();
 
     const [isSeller, setIsSeller] = useState(false)
+    const [tryRegister, setTryRegister] = useState(false)
+    const { registerError } = useSelector(state => state.user)
+
+    useEffect(() => {
+        if (tryRegister) {
+            if (registerError) {
+                toast.error(registerError, {
+                    position: "bottom-right",
+                    autoClose: 1000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    draggable: false,
+                    progress: undefined,
+                    theme: "colored",
+                });
+                setTryRegister(false)
+            } else {
+                navigate('/login')
+            }
+        }
+    }, [registerError])
 
     const onFinish = async (values) => {
         const { usertype, first_name, last_name, email, username, password, gender, dob, address1, address2, city, state, zipcode, phone } = values
@@ -25,6 +47,7 @@ const Register = () => {
             zipcode,
             incareof: first_name + " " + last_name
         }
+        setTryRegister(true)
         if (usertype === 'buyer') {
             const newUser = {
                 username,
@@ -49,7 +72,6 @@ const Register = () => {
             }
             dispatch(sellerRegisterThunk(newUser))
         }
-        navigate('/login')
     }
 
     const onFinishFailed = (errorInfo) => {
@@ -63,6 +85,7 @@ const Register = () => {
             progress: undefined,
             theme: "colored",
         });
+        setTryRegister(false)
     }
 
     return (
