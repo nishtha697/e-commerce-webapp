@@ -6,7 +6,6 @@ const SHOPPING_CART_API = 'http://localhost:4000/api/shopping-cart';
 export const shoppingCartDeleteThunk = createAsyncThunk('shopping-cart/delete',
     async (username, { rejectWithValue }) => {
         try {
-
             const response = await axios.delete(`${SHOPPING_CART_API}/${username}`);
             return response.data;
         } catch (err) {

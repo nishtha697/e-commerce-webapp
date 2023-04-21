@@ -50,6 +50,7 @@ const Order = () => {
                         header={
                             <div className="d-flex flex-row justify-content-between w-100">
                                 <b>Order #{order.order_id}</b>
+                                <b>Placed on: {new Date(order.orderDate).toLocaleString()}</b>
                                 <Tag style={{ background: 'coral', color: 'white', display: 'flex', alignItems: 'center' }}>{orderStatus}</Tag>
                             </div>
                         }
