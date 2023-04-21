@@ -95,7 +95,7 @@ const Shipment = ({ order, shipment, showOrderDets }) => {
         <Collapse className="mb-3">
             <CustomPanel header={
                 <div className="d-flex flex-row justify-content-between w-100">
-                    {showOrderDets && <div><b>{`Order #${order.order_id}`}</b></div>}
+                    {showOrderDets && <div ><b className="pe-10">{`Order #${order.order_id}  `}</b><div>Placed on: <b>{new Date(order.orderDate).toLocaleString()}</b></div></div>}
                     <div>
                         <Tag style={{ background: "darkorange" }} className="text-white ">{getMostRecentStatus(shipment.shipmentStatusLog)}</Tag>
                         {`Shipment #${shipment.shipmentId}`}
