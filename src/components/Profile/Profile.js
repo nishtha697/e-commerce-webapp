@@ -333,7 +333,7 @@ const Profile = () => {
             </div>
 
 
-            {type === 'seller' &&
+            {type === 'buyer' &&
                 <div>
                     <Button danger onClick={handleProfileDelete}>Delete Profile</Button>
                 </div>
